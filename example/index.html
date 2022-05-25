@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge;chrome=1" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+
+    <title>FeatureProbe JS SDK demo</title>
+    <style>
+      .result {
+        color: #556ee6;
+      }
+    </style>
+    <script src="../dist/featureprobe-client-sdk-js.min.js"></script>
+  </head>
+
+  <body>
+    <div class="container">
+      <h2 class="mt-2">FeatureProbe JS SDK demo</h2>
+      <p>
+        This is a simple front-end-only application using FeatureProbe JS SDK.
+      </p>
+
+      <h3>boolean type</h3>
+      <ul>
+        <li>
+          FeatureProbe evaluation boolean type toggle result is : <span class="result" id="boolean-result"></span>
+        </li>
+        <li>
+          FeatureProbe evaluation boolean type toggle detail is : <span class="result" id="boolean-detail"></span>
+        </li>
+      </ul>
+
+      <h3>string type</h3>
+      <ul>
+        <li>
+          FeatureProbe evaluation string type toggle result is : <span class="result" id="string-result"></span>
+        </li>
+        <li>
+          FeatureProbe evaluation string type toggle detail is : <span class="result" id="string-detail"></span>
+        </li>
+      </ul>
+
+      <h3>number type</h3>
+      <ul>
+        <li>
+          FeatureProbe evaluation number type toggle result is : <span class="result" id="number-result"></span>
+        </li>
+        <li>
+          FeatureProbe evaluation number type toggle detail is : <span class="result" id="number-detail"></span>
+        </li>
+      </ul>
+
+      <h3>json type</h3>
+      <ul>
+        <li>
+          FeatureProbe evaluation json type toggle result is : <span class="result" id="json-result"></span>
+        </li>
+        <li>
+          FeatureProbe evaluation json type toggle detail is : <span class="result" id="json-detail"></span>
+        </li>
+      </ul>
+
+    </div>
+    <script>
+      const user = new featureProbe.FPUser(Date.now().toString());
+      user.with("userId", "1234567890");
+
+      const fpClient = new featureProbe.FeatureProbe({
+        remoteUrl: "http://127.0.0.1:4007",
+        togglesUrl: "http://127.0.0.1:4007/api/client-sdk/toggles",
+        eventsUrl: "http://127.0.0.1:4007/api/server/events",
+        clientSdkKey: "client-25614c7e03e9cb49c0e96357b797b1e47e7f2dff",
+        user,
+        refreshInterval: 5000,
+      });
+
+      fpClient.start();
+      fpClient.on("ready", function() {
+        const boolValue = fpClient.boolValue("bool_toggle_key", false);
+        document.getElementById("boolean-result").innerText = boolValue;
+        const boolDetail = fpClient.boolDetail("bool_toggle_key", false);
+        document.getElementById("boolean-detail").innerText = JSON.stringify(boolDetail);
+
+        const stringValue = fpClient.stringValue("string_toggle_key", "default");
+        document.getElementById("string-result").innerText = stringValue;
+        const stringDetail = fpClient.stringDetail("string_toggle_key", "default");
+        document.getElementById("string-detail").innerText = JSON.stringify(stringDetail);
+
+        const numberValue = fpClient.numberValue("number_toggle_key", 0);
+        document.getElementById("number-result").innerText = numberValue;
+        const numberDetail = fpClient.numberDetail("number_toggle_key", 0);
+        document.getElementById("number-detail").innerText = JSON.stringify(numberDetail);
+
+        const jsonValue = fpClient.jsonValue("json_toggle_key", {});
+        document.getElementById("json-result").innerText = JSON.stringify(jsonValue);
+        const jsonDetail = fpClient.jsonDetail("json_toggle_key", {});
+        document.getElementById("json-detail").innerText = JSON.stringify(jsonDetail);
+      });
+    </script>
+  </body>
+</html>
