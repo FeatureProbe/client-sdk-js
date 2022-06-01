@@ -1,4 +1,8 @@
 # FeatureProbe Client Side SDK for JavaScript
+[![Top Language](https://img.shields.io/github/languages/top/FeatureProbe/client-sdk-js)](https://github.com/FeatureProbe/client-sdk-js/search?l=rust)
+[![Coverage Status](https://coveralls.io/repos/github/FeatureProbe/client-sdk-js/badge.svg?branch=main)](https://coveralls.io/github/FeatureProbe/client-sdk-js?branch=main)
+[![Github Star](https://img.shields.io/github/stars/FeatureProbe/server-sdk-rust)](https://github.com/FeatureProbe/server-sdk-rust/stargazers)
+[![Apache-2.0 license](https://img.shields.io/github/license/FeatureProbe/FeatureProbe)](https://github.com/FeatureProbe/FeatureProbe/blob/main/LICENSE)
 
 Feature Probe is an open source feature management service. This SDK is used to control features in JavaScript programs. This
 SDK is designed primarily for use in multi-user systems such as web servers and applications.
