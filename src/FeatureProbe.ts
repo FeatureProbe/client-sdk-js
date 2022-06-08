@@ -1,11 +1,11 @@
-import "whatwg-fetch";
-import { TinyEmitter } from "tiny-emitter";
-import { Base64 } from "js-base64";
-import { FPUser } from "./FPUser";
+import 'whatwg-fetch';
+import { TinyEmitter } from 'tiny-emitter';
+import { Base64 } from 'js-base64';
+import { FPUser } from './FPUser';
 
 const EVENTS = {
-  READY: "ready",
-  ERROR: "error",
+  READY: 'ready',
+  ERROR: 'error',
 };
 
 interface IValue {
@@ -63,22 +63,22 @@ class FeatureProbe extends TinyEmitter {
   }: IOption) {
     super();
     if (!clientSdkKey) {
-      throw new Error("clientSdkKey is required");
+      throw new Error('clientSdkKey is required');
     }
     if (refreshInterval <= 0) {
-      throw new Error("refreshInterval is invalid");
+      throw new Error('refreshInterval is invalid');
     }
 
     if (!remoteUrl && !togglesUrl) {
-      throw new Error("remoteUrl or togglesUrl is required");
+      throw new Error('remoteUrl or togglesUrl is required');
     }
 
     if (!remoteUrl && !eventsUrl) {
-      throw new Error("remoteUrl or eventsUrl is required");
+      throw new Error('remoteUrl or eventsUrl is required');
     }
 
     if (!remoteUrl && !togglesUrl && !eventsUrl) {
-      throw new Error("remoteUrl is required");
+      throw new Error('remoteUrl is required');
     }
 
     this.togglesUrl = new URL(togglesUrl || (remoteUrl + '/api/client-sdk/toggles'));
@@ -101,35 +101,35 @@ class FeatureProbe extends TinyEmitter {
   }
 
   public boolValue(key: string, defaultValue: boolean): boolean {
-    return this.toggleValue(key, defaultValue, "boolean") as boolean;
+    return this.toggleValue(key, defaultValue, 'boolean') as boolean;
   }
 
   public numberValue(key: string, defaultValue: number): number {
-    return this.toggleValue(key, defaultValue, "number") as number;
+    return this.toggleValue(key, defaultValue, 'number') as number;
   }
 
   public stringValue(key: string, defaultValue: string): string {
-    return this.toggleValue(key, defaultValue, "string") as string;
+    return this.toggleValue(key, defaultValue, 'string') as string;
   }
 
   public jsonValue(key: string, defaultValue: object): object {
-    return this.toggleValue(key, defaultValue, "object") as object;
+    return this.toggleValue(key, defaultValue, 'object') as object;
   }
 
   public boolDetail(key: string, defaultValue: boolean): FPToggleDetail {
-    return this.toggleDetail(key, defaultValue, "boolean");
+    return this.toggleDetail(key, defaultValue, 'boolean');
   }
 
   public numberDetail(key: string, defaultValue: number): FPToggleDetail {
-    return this.toggleDetail(key, defaultValue, "number");
+    return this.toggleDetail(key, defaultValue, 'number');
   }
 
   public stringDetail(key: string, defaultValue: string): FPToggleDetail {
-    return this.toggleDetail(key, defaultValue, "string");
+    return this.toggleDetail(key, defaultValue, 'string');
   }
 
   public jsonDetail(key: string, defaultValue: object): FPToggleDetail {
-    return this.toggleDetail(key, defaultValue, "object");
+    return this.toggleDetail(key, defaultValue, 'object');
   }
 
   public allToggles(): { [key: string]: FPToggleDetail } | undefined {
@@ -172,7 +172,7 @@ class FeatureProbe extends TinyEmitter {
         value: defaultValue,
         ruleIndex: null,
         version: 0,
-        reason: "Not ready",
+        reason: 'Not ready',
       };
     }
 
@@ -182,7 +182,7 @@ class FeatureProbe extends TinyEmitter {
         value: defaultValue,
         ruleIndex: null,
         version: null,
-        reason: "Toggle: [" + key + "] not found",
+        reason: 'Toggle: [' + key + '] not found',
       };
     } else if (typeof detail.value === valueType) {
       return detail;
@@ -191,7 +191,7 @@ class FeatureProbe extends TinyEmitter {
         value: defaultValue,
         ruleIndex: null,
         version: null,
-        reason: "Value type mismatch",
+        reason: 'Value type mismatch',
       };
     }
   }
@@ -200,14 +200,14 @@ class FeatureProbe extends TinyEmitter {
     const userStr = JSON.stringify(this.user);
     const userParam = Base64.encode(userStr);
     const url = this.togglesUrl;
-    url.searchParams.set("user", userParam);
+    url.searchParams.set('user', userParam);
 
     await fetch(url.toString(), {
-      method: "GET",
-      cache: "no-cache",
+      method: 'GET',
+      cache: 'no-cache',
       headers: {
         Authorization: this.clientSdkKey,
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     })
       .then((response) => {
@@ -226,15 +226,15 @@ class FeatureProbe extends TinyEmitter {
       const timestamp = Date.now();
       const payload: IParams[] = [
         {
-          "access": {
-            "startTime": timestamp,
-            "endTime": timestamp,
-            "counters": {
+          'access': {
+            'startTime': timestamp,
+            'endTime': timestamp,
+            'counters': {
               [key]: [{
-                "count": 1,
-                "value": this.toggles[key].value,
-                "index": this.toggles[key].ruleIndex,
-                "version": this.toggles[key].version,
+                'count': 1,
+                'value': this.toggles[key].value,
+                'index': this.toggles[key].ruleIndex,
+                'version': this.toggles[key].version,
               }]
             }
           }
@@ -242,11 +242,11 @@ class FeatureProbe extends TinyEmitter {
       ];
 
       await fetch(this.eventsUrl.toString(), {
-        cache: "no-cache",
-        method: "POST",
+        cache: 'no-cache',
+        method: 'POST',
         headers: {
           Authorization: this.clientSdkKey,
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(payload),
       });
