@@ -31,6 +31,7 @@ interface IParams {
 interface FPToggleDetail {
   value: boolean | number | object;
   ruleIndex: number | null;
+  variationIndex: number | null;
   version: number | null;
   reason: string;
 }
@@ -171,6 +172,7 @@ class FeatureProbe extends TinyEmitter {
       return {
         value: defaultValue,
         ruleIndex: null,
+        variationIndex: null,
         version: 0,
         reason: 'Not ready',
       };
@@ -181,6 +183,7 @@ class FeatureProbe extends TinyEmitter {
       return {
         value: defaultValue,
         ruleIndex: null,
+        variationIndex: null,
         version: null,
         reason: 'Toggle: [' + key + '] not found',
       };
@@ -190,6 +193,7 @@ class FeatureProbe extends TinyEmitter {
       return {
         value: defaultValue,
         ruleIndex: null,
+        variationIndex: null,
         version: null,
         reason: 'Value type mismatch',
       };
@@ -233,7 +237,7 @@ class FeatureProbe extends TinyEmitter {
               [key]: [{
                 'count': 1,
                 'value': this.toggles[key].value,
-                'index': this.toggles[key].ruleIndex,
+                'index': this.toggles[key].variationIndex,
                 'version': this.toggles[key].version,
               }]
             }
