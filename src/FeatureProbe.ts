@@ -4,7 +4,7 @@ import { Base64 } from "js-base64";
 import { FPUser } from "./FPUser";
 
 const PKG_VERSION = require("../package.json").version;
-const USER_AGENT = "Js/" + PKG_VERSION;
+const UA = "JS/" + PKG_VERSION;
 
 const EVENTS = {
   READY: "ready",
@@ -217,7 +217,7 @@ class FeatureProbe extends TinyEmitter {
       headers: {
         Authorization: this.clientSdkKey,
         "Content-Type": "application/json",
-        "User-Agent": USER_AGENT,
+        "UA": UA,
       },
     })
       .then((response) => {
@@ -259,7 +259,7 @@ class FeatureProbe extends TinyEmitter {
         headers: {
           Authorization: this.clientSdkKey,
           "Content-Type": "application/json",
-          "User-Agent": USER_AGENT,
+          "UA": UA,
         },
         body: JSON.stringify(payload),
       });
