@@ -62,22 +62,15 @@ fp.on('ready', function() {
 ### Step 4. Unit Testing (Optional)
 
 ```js
-import { FetchMock } from "jest-fetch-mock";
-
 test("feature probe unit testing", () => {
-  _fetch.mockResponseOnce(JSON.stringify({"testToggle": { "value": true}}));
-  let user = new FPUser("some-key")
-  let fp = new FeatureProbe({
-    remoteUrl: 'http://127.0.0.1:4007',
-    clientSdkKey: 'client-sdk-key1',
-    user: user
-  });
+  let fp = FeatureProbe.newForTest({ testToggle: true });
   fp.start();
 
-  fp.on('ready', function() {
-    let t = fp.boolValue("testToggle", false)
+  fp.on("ready", function () {
+    let t = fp.boolValue("testToggle", false);
     expect(t).toBe(true);
-  })
+    done();
+  });
 });
 ```
 

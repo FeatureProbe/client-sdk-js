@@ -146,6 +146,27 @@ class FeatureProbe extends TinyEmitter {
     return Object.assign({}, this.user);
   }
 
+  static newForTest(toggles: { [key: string]: any }): FeatureProbe {
+    var fp = new FeatureProbe({
+      remoteUrl: "http://127.0.0.1:4000",
+      clientSdkKey: "_",
+      user: new FPUser(""),
+    });
+    var _toggles: { [key: string]: FPToggleDetail } = {};
+    for (let key in toggles) {
+      let value = toggles[key];
+      _toggles[key] = {
+        value: value,
+        ruleIndex: null,
+        variationIndex: null,
+        version: 0,
+        reason: "",
+      };
+    }
+    fp.toggles = _toggles;
+    return fp;
+  }
+
   private toggleValue(key: string, defaultValue: any, valueType: string): any {
     this.sendEvents(key);
 
