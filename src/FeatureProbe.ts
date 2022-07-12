@@ -13,7 +13,7 @@ const EVENTS = {
 
 interface IValue {
   count: number;
-  value: boolean | number | object;
+  value: boolean | string | number | object;
   index: number | null;
   version: number | null;
 }
@@ -32,7 +32,7 @@ interface IParams {
 }
 
 interface FPToggleDetail {
-  value: boolean | number | object;
+  value: boolean | string | number | object;
   ruleIndex: number | null;
   variationIndex: number | null;
   version: number | null;
@@ -217,7 +217,7 @@ class FeatureProbe extends TinyEmitter {
       headers: {
         Authorization: this.clientSdkKey,
         "Content-Type": "application/json",
-        "UA": UA,
+        UA: UA,
       },
     })
       .then((response) => {
@@ -259,7 +259,7 @@ class FeatureProbe extends TinyEmitter {
         headers: {
           Authorization: this.clientSdkKey,
           "Content-Type": "application/json",
-          "UA": UA,
+          UA: UA,
         },
         body: JSON.stringify(payload),
       });

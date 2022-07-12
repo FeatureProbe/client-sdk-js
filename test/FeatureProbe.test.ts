@@ -133,13 +133,29 @@ test("feature probe json toggle", () => {
     });
     expect(fp.jsonValue("bool_toggle", {})).toMatchObject({});
     expect(fp.jsonValue("__not_exist_toggle", {})).toMatchObject({});
-  
+
     let detail = fp.jsonDetail("bool_toggle", {});
     expect(detail.value).toMatchObject({});
     expect(detail.reason).toBe("Value type mismatch");
-  
+
     detail = fp.jsonDetail("json_toggle", {});
     expect(detail.value).toMatchObject({});
     expect(detail.ruleIndex).toBe(0);
+  })
+});
+
+test("feature probe unit testing", () => {
+  _fetch.mockResponseOnce(JSON.stringify({"testToggle": { "value": true}}));
+  let user = new FPUser("some-key")
+  let fp = new FeatureProbe({
+    remoteUrl: 'http://127.0.0.1:4007',
+    clientSdkKey: 'client-sdk-key1',
+    user: user
+  });
+  fp.start();
+
+  fp.on('ready', function() {
+    let t = fp.boolValue("testToggle", false)
+    expect(t).toBe(true);
   })
 });

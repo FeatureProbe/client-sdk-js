@@ -1,4 +1,5 @@
 # FeatureProbe Client Side SDK for JavaScript
+
 [![Top Language](https://img.shields.io/github/languages/top/FeatureProbe/client-sdk-js)](https://github.com/FeatureProbe/client-sdk-js/search?l=rust)
 [![Coverage Status](https://coveralls.io/repos/github/FeatureProbe/client-sdk-js/badge.svg?branch=main)](https://coveralls.io/github/FeatureProbe/client-sdk-js?branch=main)
 [![Github Star](https://img.shields.io/github/stars/FeatureProbe/client-sdk-js)](https://github.com/FeatureProbe/client-sdk-js/stargazers)
@@ -25,26 +26,21 @@ Or via CDN:
 <script type="text/javascript" src="https://unpkg.com/featureprobe-client-sdk-js@latest/dist/featureprobe-client-sdk-js.min.js"></script>
 ```
 
-
 ### Step 2. Create a FeatureProbe instance
 
 After you install and import the SDK, create a single, shared instance of the FeatureProbe sdk.
 
 ```js
-const user = new featureProbe.FPUser("#USER-KEY#"); 
+const user = new featureProbe.FPUser("#USER-KEY#");
 user.with("#ATTR-KEY#", "#ATTR-VALUE#");
 
 const fp = new featureProbe.FeatureProbe({
     remoteUrl: "#OPEN-API-URL#",
-    togglesUrl: "#YOUR-TOGGLES-URL#",
-    eventsUrl: "#YOUR-EVENTS-URL#",
     clientSdkKey: '#YOUR-CLIENT-SDK-KEY#',
     user,
-    refreshInterval: 1000,
 });
 fp.start();
 ```
-
 
 ### Step 3. Use the instance to get your setting value
 
@@ -63,6 +59,28 @@ fp.on('ready', function() {
 })
 ```
 
+### Step 4. Unit Testing (Optional)
+
+```js
+import { FetchMock } from "jest-fetch-mock";
+
+test("feature probe unit testing", () => {
+  _fetch.mockResponseOnce(JSON.stringify({"testToggle": { "value": true}}));
+  let user = new FPUser("some-key")
+  let fp = new FeatureProbe({
+    remoteUrl: 'http://127.0.0.1:4007',
+    clientSdkKey: 'client-sdk-key1',
+    user: user
+  });
+  fp.start();
+
+  fp.on('ready', function() {
+    let t = fp.boolValue("testToggle", false)
+    expect(t).toBe(true);
+  })
+});
+```
+
 ## Available options
 
 This SDK takes the following options:
@@ -70,11 +88,11 @@ This SDK takes the following options:
 | option            | required       | default | description                                                                                                                                      |
 |-------------------|----------------|---------|--------------------------------------------------------------------------------------------------------------------------------------------------|
 | remoteUrl         | it all depends | n/a     | The common URL to get toggles and send events.  E.g.: `https://featureprobe.com/api`   It is required when togglesUrl  and    eventsUrl are not set   |
-| togglesUrl        | no             | n/a     | The specific URL to get toggles, once set, remoteUrl become invalid   | 
-| eventsUrl         | no             | n/a     | The specific URL to send events, once set, remoteUrl become invalid  | 
-| clientSdkKey      | yes            | n/a     | The Client SDK Key URL to be used   | 
-| user              | yes            | n/a     | Pass a valid user context for SDK initialization  | 
-| refreshInterval   | no            | 1000    | The SDK check for updated in millisecond   | 
+| togglesUrl        | no             | n/a     | The specific URL to get toggles, once set, remoteUrl become invalid   |
+| eventsUrl         | no             | n/a     | The specific URL to send events, once set, remoteUrl become invalid  |
+| clientSdkKey      | yes            | n/a     | The Client SDK Key URL to be used   |
+| user              | yes            | n/a     | Pass a valid user context for SDK initialization  |
+| refreshInterval   | no            | 1000    | The SDK check for updated in millisecond   |
 
 ## Testing
 
@@ -86,15 +104,14 @@ be sure to pull submodules first to get the latest integration tests before runn
 ```
 
 ## Contributing
-We are working on continue evolving FeatureProbe core, making it flexible and easier to use. 
-Development of FeatureProbe happens in the open on GitHub, and we are grateful to the 
+
+We are working on continue evolving FeatureProbe core, making it flexible and easier to use.
+Development of FeatureProbe happens in the open on GitHub, and we are grateful to the
 community for contributing bugfixes and improvements.
 
-Please read [CONTRIBUTING](https://github.com/FeatureProbe/featureprobe/blob/master/CONTRIBUTING.md) 
+Please read [CONTRIBUTING](https://github.com/FeatureProbe/featureprobe/blob/master/CONTRIBUTING.md)
 for details on our code of conduct, and the process for taking part in improving FeatureProbe.
-
 
 ## License
 
 This project is licensed under the Apache 2.0 License - see the [LICENSE](LICENSE) file for details.
-
