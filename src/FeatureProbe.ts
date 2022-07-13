@@ -88,7 +88,7 @@ class FeatureProbe extends TinyEmitter {
     this.togglesUrl = new URL(
       togglesUrl || remoteUrl + "/api/client-sdk/toggles"
     );
-    this.eventsUrl = new URL(eventsUrl || remoteUrl + "/api/server/events");
+    this.eventsUrl = new URL(eventsUrl || remoteUrl + "/api/events");
     this.user = user;
     this.clientSdkKey = clientSdkKey;
     this.refreshInterval = refreshInterval;

@@ -62,7 +62,7 @@ fp.on('ready', function() {
 ### Step 4. Unit Testing (Optional)
 
 ```js
-test("feature probe unit testing", () => {
+test("feature probe unit testing", (done) => {
   let fp = FeatureProbe.newForTest({ testToggle: true });
   fp.start();
 
@@ -80,11 +80,11 @@ This SDK takes the following options:
 
 | option            | required       | default | description                                                                                                                                      |
 |-------------------|----------------|---------|--------------------------------------------------------------------------------------------------------------------------------------------------|
-| remoteUrl         | it all depends | n/a     | The common URL to get toggles and send events.  E.g.: `https://featureprobe.com/api`   It is required when togglesUrl  and    eventsUrl are not set   |
-| togglesUrl        | no             | n/a     | The specific URL to get toggles, once set, remoteUrl become invalid   |
-| eventsUrl         | no             | n/a     | The specific URL to send events, once set, remoteUrl become invalid  |
-| clientSdkKey      | yes            | n/a     | The Client SDK Key URL to be used   |
-| user              | yes            | n/a     | Pass a valid user context for SDK initialization  |
+| remoteUrl         | depends | n/a     | The unified URL to get toggles and post events |
+| togglesUrl        | no             | n/a     | The specific URL to get toggles, once set, remoteUrl will be ignored |
+| eventsUrl         | no             | n/a     | The specific URL to post events, once set, remoteUrl will be ignored |
+| clientSdkKey      | yes            | n/a     | The Client SDK Key is used to authentification   |
+| user              | yes            | n/a     | The User with attributes like name, age is used when toggle evaluation |
 | refreshInterval   | no            | 1000    | The SDK check for updated in millisecond   |
 
 ## Testing
