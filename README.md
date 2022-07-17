@@ -74,6 +74,8 @@ test("feature probe unit testing", (done) => {
 });
 ```
 
+[Here is an example](https://github.com/FeatureProbe/client-sdk-js/tree/main/example)
+
 ## Available options
 
 This SDK takes the following options:
