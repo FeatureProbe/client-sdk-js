@@ -66,7 +66,7 @@
 
     </div>
     <script>
-      const user = new featureProbe.FPUser(Date.now().toString());
+      const user = new featureProbe.FPUser("unique_user_key");
       user.with("userId", "1234567890");
 
       const fpClient = new featureProbe.FeatureProbe({
