@@ -53,11 +53,11 @@ Or via CDN:
 After you install and import the SDK, create a single, shared instance of the FeatureProbe sdk.
 
 ```js
-const user = new featureProbe.FPUser("#USER-KEY#");
-user.with("#ATTR-KEY#", "#ATTR-VALUE#");
+const user = new featureProbe.FPUser("user");
+user.with("key", "value");
 
 const fp = new featureProbe.FeatureProbe({
-    remoteUrl: "#OPEN-API-URL#",
+    remoteUrl: "https://127.0.0.1:4007",
     clientSdkKey: '#YOUR-CLIENT-SDK-KEY#',
     user,
 });
