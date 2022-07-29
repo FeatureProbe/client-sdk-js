@@ -3,7 +3,9 @@ import { TinyEmitter } from "tiny-emitter";
 import { Base64 } from "js-base64";
 import { FPUser } from "./FPUser";
 
-const PKG_VERSION = require("../package.json").version;
+import pkg from '../package.json';
+const PKG_VERSION = pkg.version;
+
 const UA = "JS/" + PKG_VERSION;
 
 const EVENTS = {
