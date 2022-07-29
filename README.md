@@ -8,7 +8,29 @@
 FeatureProbe is an open source feature management service. This SDK is used to control features in JavaScript programs. This
 SDK is designed primarily for use in multi-user systems such as web servers and applications.
 
-## Getting started
+## Basic Terms
+
+Reading the short [Basic Terms](https://github.com/FeatureProbe/FeatureProbe/blob/main/BASIC_TERMS.md) will help to understand the code blow more easily.  [中文](https://github.com/FeatureProbe/FeatureProbe/blob/main/BASIC_TERMS_CN.md)
+
+## Try Out Demo Code
+
+We provide a runnable demo code for you to understand how FeatureProbe SDK is used.
+
+1. Start FeatureProbe Service with docker composer. [How to](https://github.com/FeatureProbe/FeatureProbe#1-starting-featureprobe-service-with-docker-compose)
+2. Download this repo and run the demo program:
+```bash
+git clone https://github.com/FeatureProbe/client-sdk-js.git
+cd client-sdk-js
+// open example/index.html in browser
+```
+
+3. Find the Demo code in [example](https://github.com/FeatureProbe/client-sdk-js/tree/main/example), 
+do some change and run the program again.
+```
+// open example/index.html in browser
+```
+
+## Step-by-Step Guide
 
 In this guide we explain how to use feature toggles in a JavaScript application using FeatureProbe.
 
@@ -31,11 +53,11 @@ Or via CDN:
 After you install and import the SDK, create a single, shared instance of the FeatureProbe sdk.
 
 ```js
-const user = new featureProbe.FPUser("#USER-KEY#");
-user.with("#ATTR-KEY#", "#ATTR-VALUE#");
+const user = new featureProbe.FPUser("user");
+user.with("key", "value");
 
 const fp = new featureProbe.FeatureProbe({
-    remoteUrl: "#OPEN-API-URL#",
+    remoteUrl: "https://127.0.0.1:4007",
     clientSdkKey: '#YOUR-CLIENT-SDK-KEY#',
     user,
 });
@@ -93,7 +115,7 @@ We have unified integration tests for all our SDKs. Integration test cases are a
 be sure to pull submodules first to get the latest integration tests before running tests.
 
 ```js
-    npm run test
+npm run test
 ```
 
 ## Contributing

@@ -66,13 +66,11 @@
 
     </div>
     <script>
-      const user = new featureProbe.FPUser(Date.now().toString());
+      const user = new featureProbe.FPUser("unique_user_key");
       user.with("userId", "1234567890");
 
       const fpClient = new featureProbe.FeatureProbe({
         remoteUrl: "http://127.0.0.1:4007",
-        togglesUrl: "http://127.0.0.1:4007/api/client-sdk/toggles",
-        eventsUrl: "http://127.0.0.1:4007/api/server/events",
         clientSdkKey: "client-25614c7e03e9cb49c0e96357b797b1e47e7f2dff",
         user,
         refreshInterval: 5000,
