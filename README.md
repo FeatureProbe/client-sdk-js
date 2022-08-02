@@ -38,6 +38,8 @@ In this guide we explain how to use feature toggles in a JavaScript application 
 
 First, install the FeatureProbe SDK as a dependency in your application.
 
+NPM:
+
 ```js
 npm install featureprobe-client-sdk-js --save
 ```
@@ -52,14 +54,32 @@ Or via CDN:
 
 After you install and import the SDK, create a single, shared instance of the FeatureProbe sdk.
 
+NPM:
+
 ```js
-const user = new featureProbe.FPUser("user");
-user.with("key", "value");
+const uniqueUserId = /* uniqueUserId */;
+const user = new FPUser(uniqueUserId);
+user.with("userId", /* userId */);
+
+const fp = new FeatureProbe({
+  remoteUrl: "https://127.0.0.1:4007",
+  clientSdkKey: /* clientSdkKey */
+  user,
+});
+fp.start();
+```
+
+Or via CDN:
+
+```js
+const uniqueUserId = /* uniqueUserId */;
+const user = new featureProbe.FPUser(uniqueUserId);
+user.with("userId", /* userId */);
 
 const fp = new featureProbe.FeatureProbe({
-    remoteUrl: "https://127.0.0.1:4007",
-    clientSdkKey: '#YOUR-CLIENT-SDK-KEY#',
-    user,
+  remoteUrl: "https://127.0.0.1:4007",
+  clientSdkKey: /* clientSdkKey */
+  user,
 });
 fp.start();
 ```
@@ -69,19 +89,20 @@ fp.start();
 You can use sdk to check which value this user will receive for a given feature flag.
 
 ```js
-fp.on('ready', function() {
-    const result = fp.boolValue('ui_demo_toggle', false);
-    if (result) {
-        do_some_thing();
-    } else {
-        do_other_thing();
-    }
-    const reason = fp.boolDetail('ui_demo_toggle', false);
-    console.log(reason);
+fp.on("ready", function() {
+  const result = fp.boolValue(/* toggleKey */, false);
+  if (result) {
+    do_some_thing();
+  } else {
+    do_other_thing();
+  }
+  const reason = fp.boolDetail(/* toggleKey */, false);
+  console.log(reason);
 })
 ```
 
 ### Step 4. Unit Testing (Optional)
+NPM:
 
 ```js
 test("feature probe unit testing", (done) => {
@@ -89,7 +110,22 @@ test("feature probe unit testing", (done) => {
   fp.start();
 
   fp.on("ready", function () {
-    let t = fp.boolValue("testToggle", false);
+    let t = fp.boolValue(/* toggleKey */, false);
+    expect(t).toBe(true);
+    done();
+  });
+});
+```
+
+Or via CDN:
+
+```js
+test("feature probe unit testing", (done) => {
+  let fp = featureProbe.FeatureProbe.newForTest({ testToggle: true });
+  fp.start();
+
+  fp.on("ready", function () {
+    let t = fp.boolValue(/* toggleKey */, false);
     expect(t).toBe(true);
     done();
   });
