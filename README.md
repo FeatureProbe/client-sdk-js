@@ -52,7 +52,7 @@ Or via CDN:
 
 ### Step 2. Create a FeatureProbe instance
 
-After you install and import the SDK, create a single, shared instance of the FeatureProbe sdk.
+After you install and import the SDK, create a single, shared instance of the FeatureProbe SDK.
 
 NPM:
 
@@ -61,32 +61,34 @@ const userId = /* unique user id in your business logic */;
 const user = new FPUser(userId);
 user.with("userId", /* userId */);
 
-let remoteUrl = "https://featureprobe.io/server";
-// let remoteUrl = "http://localhost:4007";   // for local docker
+const remoteUrl = "https://featureprobe.io/server";
+// const remoteUrl = "http://localhost:4007";   // for local docker
 
 const fp = new FeatureProbe({
   remoteUrl,
-  clientSdkKey: /* clientSdkKey */
-  user,
+  clientSdkKey: /* clientSdkKey */,
+  user
 });
+
 fp.start();
 ```
 
 Or via CDN:
 
 ```js
-const uniqueUserId = /* uniqueUserId */;
-const user = new featureProbe.FPUser(uniqueUserId);
+const userId = /* unique user id in your business logic */;
+const user = new FPUser(userId);
 user.with("userId", /* userId */);
 
-let remoteUrl = "https://featureprobe.io/server";
-// let remoteUrl = "http://localhost:4007";   // for local docker
+const remoteUrl = "https://featureprobe.io/server";
+// const remoteUrl = "http://localhost:4007";   // for local docker
 
 const fp = new featureProbe.FeatureProbe({
   remoteUrl,
-  clientSdkKey: /* clientSdkKey */
-  user,
+  clientSdkKey: /* clientSdkKey */,
+  user
 });
+
 fp.start();
 ```
 
@@ -98,9 +100,9 @@ You can use sdk to check which value this user will receive for a given feature 
 fp.on("ready", function() {
   const result = fp.boolValue(/* toggleKey */, false);
   if (result) {
-    do_some_thing();
+    // do_some_thing();
   } else {
-    do_other_thing();
+    // do_other_thing();
   }
   const reason = fp.boolDetail(/* toggleKey */, false);
   console.log(reason);
@@ -144,11 +146,11 @@ This SDK takes the following options:
 
 | option            | required       | default | description                                                                                                                                      |
 |-------------------|----------------|---------|--------------------------------------------------------------------------------------------------------------------------------------------------|
+| user              | yes            | n/a     | The User with attributes like name, age is used when toggle evaluation |
+| clientSdkKey      | yes            | n/a     | The Client SDK Key is used to authentification   |
 | remoteUrl         | depends | n/a     | The unified URL to get toggles and post events |
 | togglesUrl        | no             | n/a     | The specific URL to get toggles, once set, remoteUrl will be ignored |
 | eventsUrl         | no             | n/a     | The specific URL to post events, once set, remoteUrl will be ignored |
-| clientSdkKey      | yes            | n/a     | The Client SDK Key is used to authentification   |
-| user              | yes            | n/a     | The User with attributes like name, age is used when toggle evaluation |
 | refreshInterval   | no            | 1000    | The SDK check for updated in millisecond   |
 
 ## Testing
