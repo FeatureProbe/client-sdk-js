@@ -61,8 +61,11 @@ const uniqueUserId = /* uniqueUserId */;
 const user = new FPUser(uniqueUserId);
 user.with("userId", /* userId */);
 
+let remoteUrl = "https://featureprobe.io/server";
+// let remoteUrl = "http://localhost:4007";   // for local docker
+
 const fp = new FeatureProbe({
-  remoteUrl: "https://127.0.0.1:4007",
+  remoteUrl,
   clientSdkKey: /* clientSdkKey */
   user,
 });
@@ -76,8 +79,11 @@ const uniqueUserId = /* uniqueUserId */;
 const user = new featureProbe.FPUser(uniqueUserId);
 user.with("userId", /* userId */);
 
+let remoteUrl = "https://featureprobe.io/server";
+// let remoteUrl = "http://localhost:4007";   // for local docker
+
 const fp = new featureProbe.FeatureProbe({
-  remoteUrl: "https://127.0.0.1:4007",
+  remoteUrl,
   clientSdkKey: /* clientSdkKey */
   user,
 });

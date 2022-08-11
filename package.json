@@ -1,6 +1,6 @@
 {
   "name": "featureprobe-client-sdk-js",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "FeatureProbe Client Side SDK for JavaScript",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -21,7 +21,8 @@
     "package": "npm run build && npm pack",
     "test": "jest --no-cache --runInBand",
     "test:cov": "jest --coverage --no-cache --runInBand",
-    "addscope": "node tools/packagejson name featureprobe-client-sdk-js"
+    "addscope": "node tools/packagejson name featureprobe-client-sdk-js",
+    "doc": "typedoc"
   },
   "publishConfig": {
     "access": "public"
@@ -72,6 +73,7 @@
     "rollup-plugin-typescript2": "^0.31.2",
     "ts-jest": "^27.0.5",
     "ts-loader": "^9.2.5",
+    "typedoc": "^0.23.10",
     "typescript": "^4.6.3",
     "webpack": "^5.52.1",
     "webpack-cli": "^4.8.0"
