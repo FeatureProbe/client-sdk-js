@@ -57,8 +57,8 @@ After you install and import the SDK, create a single, shared instance of the Fe
 NPM:
 
 ```js
-const uniqueUserId = /* uniqueUserId */;
-const user = new FPUser(uniqueUserId);
+const userId = /* unique user id in your business logic */;
+const user = new FPUser(userId);
 user.with("userId", /* userId */);
 
 let remoteUrl = "https://featureprobe.io/server";
