@@ -64,6 +64,8 @@ After you install and import the SDK, create a single, shared instance of the Fe
 NPM:
 
 ```js
+import { FeatureProbe, FPUser } from "featureprobe-client-sdk-js";
+
 const userId = /* unique user id in your business logic */;
 const user = new FPUser(userId);
 user.with("userId", /* userId */);
