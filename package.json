@@ -2,8 +2,8 @@
   "name": "featureprobe-client-sdk-js",
   "version": "1.0.5",
   "description": "FeatureProbe Client Side SDK for JavaScript",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "./dist/src/index.js",
+  "types": "./dist/src/index.d.ts",
   "unpkg": "./dist/featureprobe-client-sdk-js.min.js",
   "jsdelivr": "./dist/featureprobe-client-sdk-js.min.js",
   "files": [
