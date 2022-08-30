@@ -15,7 +15,7 @@ test("feature probe init with invalid url", () => {
     new FeatureProbe({
       remoteUrl: "invalid url",
       clientSdkKey: "client-sdk-key1",
-      user: new FPUser("123"),
+      user: new FPUser(),
     });
   }).toThrow();
 });
@@ -25,14 +25,14 @@ test("feature probe init", () => {
     new FeatureProbe({
       remoteUrl: "http://127.0.0.1:4007",
       clientSdkKey: "client-sdk-key1",
-      user: new FPUser("123"),
+      user: new FPUser(),
     })
   ).not.toBeNull();
 });
 
 test("feature probe request", (done) => {
   _fetch.mockResponseOnce(JSON.stringify(data));
-  let user = new FPUser("some-key").with("city", "2");
+  const user = new FPUser().with("city", "2");
   let fp = new FeatureProbe({
     remoteUrl: "http://127.0.0.1:4007",
     clientSdkKey: "client-sdk-key1",
@@ -47,7 +47,7 @@ test("feature probe request", (done) => {
 
 test("feature probe bool toggle", (done) => {
   _fetch.mockResponseOnce(JSON.stringify(data));
-  let user = new FPUser("some-key").with("city", "2");
+  const user = new FPUser().with("city", "2");
   let fp = new FeatureProbe({
     remoteUrl: "http://127.0.0.1:4007",
     clientSdkKey: "client-sdk-key1",
@@ -72,7 +72,7 @@ test("feature probe bool toggle", (done) => {
 
 test("feature probe number toggle", (done) => {
   _fetch.mockResponseOnce(JSON.stringify(data));
-  let user = new FPUser("some-key").with("city", "2");
+  const user = new FPUser().with("city", "2");
   let fp = new FeatureProbe({
     remoteUrl: "http://127.0.0.1:4007",
     clientSdkKey: "client-sdk-key1",
@@ -97,7 +97,7 @@ test("feature probe number toggle", (done) => {
 
 test("feature probe string toggle", (done) => {
   _fetch.mockResponseOnce(JSON.stringify(data));
-  let user = new FPUser("some-key").with("city", "2");
+  const user = new FPUser().with("city", "2");
   let fp = new FeatureProbe({
     remoteUrl: "http://127.0.0.1:4007",
     clientSdkKey: "client-sdk-key1",
@@ -123,7 +123,7 @@ test("feature probe string toggle", (done) => {
 
 test("feature probe json toggle", (done) => {
   _fetch.mockResponseOnce(JSON.stringify(data));
-  let user = new FPUser("some-key").with("city", "2");
+  const user = new FPUser().with("city", "2");
   let fp = new FeatureProbe({
     remoteUrl: "http://127.0.0.1:4007",
     clientSdkKey: "client-sdk-key1",

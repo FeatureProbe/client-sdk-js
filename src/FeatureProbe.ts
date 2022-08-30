@@ -152,7 +152,7 @@ class FeatureProbe extends TinyEmitter {
     var fp = new FeatureProbe({
       remoteUrl: "http://127.0.0.1:4000",
       clientSdkKey: "_",
-      user: new FPUser(""),
+      user: new FPUser(),
     });
     var _toggles: { [key: string]: FPToggleDetail } = {};
     for (let key in toggles) {
