@@ -20,7 +20,7 @@ test("user attr", () => {
 test("user attrs", () => {
   const attrs = { city: "1" };
   let user = new FPUser().extendAttrs(attrs);
-  expect(user.getAttrs()).toBe(attrs);
+  expect(user.getAttrs()).toStrictEqual(attrs);
 });
 
 test("user stable key", () => {
