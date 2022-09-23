@@ -6,7 +6,7 @@ test("user init", (done) => {
   expect(user.getKey() != undefined);
   setTimeout(() => {
     const key2 = user.getKey();
-    expect(key == key2);
+    expect(key).toBe(key2);
     done();
   }, 10);
 });
@@ -20,12 +20,12 @@ test("user attr", () => {
 test("user attrs", () => {
   const attrs = { city: "1" };
   let user = new FPUser().extendAttrs(attrs);
-  expect(user.getAttrs() == attrs);
+  expect(user.getAttrs()).toBe(attrs);
 });
 
 test("user stable key", () => {
   let user = new FPUser();
   let stableKey = "12jofjaewf";
   user.stableRollout(stableKey);
-  expect(user.getKey() == stableKey);
+  expect(user.getKey()).toBe(stableKey);
 });
