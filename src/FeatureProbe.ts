@@ -58,6 +58,7 @@ class FeatureProbe extends TinyEmitter {
   private user: FPUser;
   private toggles: { [key: string]: FPToggleDetail } | undefined;
   private timer?: any;
+  private readyPromise: Promise<void>
 
   constructor({
     remoteUrl,
@@ -95,6 +96,13 @@ class FeatureProbe extends TinyEmitter {
     this.clientSdkKey = clientSdkKey;
     this.refreshInterval = refreshInterval;
     this.toggles = undefined;
+    this.readyPromise = new Promise((resolve) => {
+      const onReadyCallback = () => {
+        this.off(EVENTS.READY, onReadyCallback)
+        resolve();
+      }
+      this.on(EVENTS.READY, onReadyCallback);
+    });
   }
 
   public async start() {
@@ -106,6 +114,10 @@ class FeatureProbe extends TinyEmitter {
 
   public stop() {
     clearInterval(this.timer);
+  }
+
+  public waitUntilReady(): Promise<void> {
+    return this.readyPromise;
   }
 
   public boolValue(key: string, defaultValue: boolean): boolean {
@@ -146,6 +158,15 @@ class FeatureProbe extends TinyEmitter {
 
   public getUser(): FPUser {
     return Object.assign({}, this.user);
+  }
+
+  public identifyUser(user: FPUser) {
+    this.user = Object.assign({}, user);
+  }
+
+  public logout() {
+    const user = new FPUser();
+    this.identifyUser(user);
   }
 
   static newForTest(toggles: { [key: string]: any }): FeatureProbe {
