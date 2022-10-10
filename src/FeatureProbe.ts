@@ -58,7 +58,7 @@ class FeatureProbe extends TinyEmitter {
   private user: FPUser;
   private toggles: { [key: string]: FPToggleDetail } | undefined;
   private timer?: any;
-  private readyPromise: Promise<void>
+  private readyPromise: Promise<void>;
 
   constructor({
     remoteUrl,
@@ -98,9 +98,9 @@ class FeatureProbe extends TinyEmitter {
     this.toggles = undefined;
     this.readyPromise = new Promise((resolve) => {
       const onReadyCallback = () => {
-        this.off(EVENTS.READY, onReadyCallback)
+        this.off(EVENTS.READY, onReadyCallback);
         resolve();
-      }
+      };
       this.on(EVENTS.READY, onReadyCallback);
     });
   }
