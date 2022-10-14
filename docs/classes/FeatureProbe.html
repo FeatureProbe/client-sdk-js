@@ -20,7 +20,7 @@
 <ul class="tsd-hierarchy">
 <li><span class="target">FeatureProbe</span></li></ul></li></ul></section><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/panchongyang/client-sdk-js/blob/61d10c4/src/FeatureProbe.ts#L53">src/FeatureProbe.ts:53</a></li></ul></aside>
+<li>Defined in <a href="https://github.com/panchongyang/client-sdk-js/blob/b53605d/src/FeatureProbe.ts#L58">src/FeatureProbe.ts:58</a></li></ul></aside>
 <section class="tsd-panel-group tsd-index-group">
 <section class="tsd-panel tsd-index-panel">
 <details class="tsd-index-content tsd-index-accordion" open><summary class="tsd-accordion-summary tsd-index-summary">
@@ -36,6 +36,7 @@
 <a href="FeatureProbe.html#eventsUrl" class="tsd-index-link tsd-kind-property tsd-parent-kind-class tsd-is-private"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>events<wbr/>Url</span></a>
 <a href="FeatureProbe.html#readyPromise" class="tsd-index-link tsd-kind-property tsd-parent-kind-class tsd-is-private"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>ready<wbr/>Promise</span></a>
 <a href="FeatureProbe.html#refreshInterval" class="tsd-index-link tsd-kind-property tsd-parent-kind-class tsd-is-private"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>refresh<wbr/>Interval</span></a>
+<a href="FeatureProbe.html#status" class="tsd-index-link tsd-kind-property tsd-parent-kind-class tsd-is-private"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>status</span></a>
 <a href="FeatureProbe.html#timer" class="tsd-index-link tsd-kind-property tsd-parent-kind-class tsd-is-private"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>timer?</span></a>
 <a href="FeatureProbe.html#toggles" class="tsd-index-link tsd-kind-property tsd-parent-kind-class tsd-is-private"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>toggles</span></a>
 <a href="FeatureProbe.html#togglesUrl" class="tsd-index-link tsd-kind-property tsd-parent-kind-class tsd-is-private"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>toggles<wbr/>Url</span></a>
@@ -63,6 +64,7 @@
 <a href="FeatureProbe.html#stop" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>stop</span></a>
 <a href="FeatureProbe.html#stringDetail" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>string<wbr/>Detail</span></a>
 <a href="FeatureProbe.html#stringValue" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>string<wbr/>Value</span></a>
+<a href="FeatureProbe.html#successInitialized" class="tsd-index-link tsd-kind-method tsd-parent-kind-class tsd-is-private"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>success<wbr/>Initialized</span></a>
 <a href="FeatureProbe.html#toggleDetail" class="tsd-index-link tsd-kind-method tsd-parent-kind-class tsd-is-private"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>toggle<wbr/>Detail</span></a>
 <a href="FeatureProbe.html#toggleValue" class="tsd-index-link tsd-kind-method tsd-parent-kind-class tsd-is-private"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>toggle<wbr/>Value</span></a>
 <a href="FeatureProbe.html#waitUntilReady" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>wait<wbr/>Until<wbr/>Ready</span></a>
@@ -83,49 +85,54 @@
 <h4 class="tsd-returns-title">Returns <a href="FeatureProbe.html" class="tsd-signature-type" data-tsd-kind="Class">FeatureProbe</a></h4><aside class="tsd-sources">
 <p>Overrides TinyEmitter.constructor</p>
 <ul>
-<li>Defined in <a href="https://github.com/panchongyang/client-sdk-js/blob/61d10c4/src/FeatureProbe.ts#L63">src/FeatureProbe.ts:63</a></li></ul></aside></li></ul></section></section>
+<li>Defined in <a href="https://github.com/panchongyang/client-sdk-js/blob/b53605d/src/FeatureProbe.ts#L69">src/FeatureProbe.ts:69</a></li></ul></aside></li></ul></section></section>
 <section class="tsd-panel-group tsd-member-group">
 <h2>Properties</h2>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private"><a id="clientSdkKey" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>client<wbr/>Sdk<wbr/>Key</span><a href="#clientSdkKey" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">client<wbr/>Sdk<wbr/>Key<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/panchongyang/client-sdk-js/blob/61d10c4/src/FeatureProbe.ts#L57">src/FeatureProbe.ts:57</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/panchongyang/client-sdk-js/blob/b53605d/src/FeatureProbe.ts#L62">src/FeatureProbe.ts:62</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private"><a id="eventsUrl" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>events<wbr/>Url</span><a href="#eventsUrl" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">events<wbr/>Url<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">URL</span></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/panchongyang/client-sdk-js/blob/61d10c4/src/FeatureProbe.ts#L55">src/FeatureProbe.ts:55</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/panchongyang/client-sdk-js/blob/b53605d/src/FeatureProbe.ts#L60">src/FeatureProbe.ts:60</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private"><a id="readyPromise" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>ready<wbr/>Promise</span><a href="#readyPromise" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">ready<wbr/>Promise<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/panchongyang/client-sdk-js/blob/61d10c4/src/FeatureProbe.ts#L61">src/FeatureProbe.ts:61</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/panchongyang/client-sdk-js/blob/b53605d/src/FeatureProbe.ts#L66">src/FeatureProbe.ts:66</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private"><a id="refreshInterval" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>refresh<wbr/>Interval</span><a href="#refreshInterval" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">refresh<wbr/>Interval<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/panchongyang/client-sdk-js/blob/61d10c4/src/FeatureProbe.ts#L56">src/FeatureProbe.ts:56</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/panchongyang/client-sdk-js/blob/b53605d/src/FeatureProbe.ts#L61">src/FeatureProbe.ts:61</a></li></ul></aside></section>
+<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private"><a id="status" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>status</span><a href="#status" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<div class="tsd-signature">status<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/panchongyang/client-sdk-js/blob/b53605d/src/FeatureProbe.ts#L67">src/FeatureProbe.ts:67</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private"><a id="timer" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <code class="tsd-tag ts-flagOptional">Optional</code> <span>timer</span><a href="#timer" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">timer<span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">any</span></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/panchongyang/client-sdk-js/blob/61d10c4/src/FeatureProbe.ts#L60">src/FeatureProbe.ts:60</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/panchongyang/client-sdk-js/blob/b53605d/src/FeatureProbe.ts#L65">src/FeatureProbe.ts:65</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private"><a id="toggles" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>toggles</span><a href="#toggles" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">toggles<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{ </span>[key: <span class="tsd-signature-type">string</span>]<span class="tsd-signature-symbol">: </span><a href="../interfaces/FPToggleDetail.html" class="tsd-signature-type" data-tsd-kind="Interface">FPToggleDetail</a><span class="tsd-signature-symbol"> }</span></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/panchongyang/client-sdk-js/blob/61d10c4/src/FeatureProbe.ts#L59">src/FeatureProbe.ts:59</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/panchongyang/client-sdk-js/blob/b53605d/src/FeatureProbe.ts#L64">src/FeatureProbe.ts:64</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private"><a id="togglesUrl" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>toggles<wbr/>Url</span><a href="#togglesUrl" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">toggles<wbr/>Url<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">URL</span></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/panchongyang/client-sdk-js/blob/61d10c4/src/FeatureProbe.ts#L54">src/FeatureProbe.ts:54</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/panchongyang/client-sdk-js/blob/b53605d/src/FeatureProbe.ts#L59">src/FeatureProbe.ts:59</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private"><a id="user" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>user</span><a href="#user" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">user<span class="tsd-signature-symbol">:</span> <a href="FPUser.html" class="tsd-signature-type" data-tsd-kind="Class">FPUser</a></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/panchongyang/client-sdk-js/blob/61d10c4/src/FeatureProbe.ts#L58">src/FeatureProbe.ts:58</a></li></ul></aside></section></section>
+<li>Defined in <a href="https://github.com/panchongyang/client-sdk-js/blob/b53605d/src/FeatureProbe.ts#L63">src/FeatureProbe.ts:63</a></li></ul></aside></section></section>
 <section class="tsd-panel-group tsd-member-group">
 <h2>Methods</h2>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="allToggles" class="tsd-anchor"></a>
@@ -135,7 +142,7 @@
 <li class="tsd-description">
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{ </span>[key: <span class="tsd-signature-type">string</span>]<span class="tsd-signature-symbol">: </span><a href="../interfaces/FPToggleDetail.html" class="tsd-signature-type" data-tsd-kind="Interface">FPToggleDetail</a><span class="tsd-signature-symbol"> }</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/panchongyang/client-sdk-js/blob/61d10c4/src/FeatureProbe.ts#L155">src/FeatureProbe.ts:155</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/panchongyang/client-sdk-js/blob/b53605d/src/FeatureProbe.ts#L165">src/FeatureProbe.ts:165</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="boolDetail" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>bool<wbr/>Detail</span><a href="#boolDetail" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -150,7 +157,7 @@
 <h5>defaultValue: <span class="tsd-signature-type">boolean</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <a href="../interfaces/FPToggleDetail.html" class="tsd-signature-type" data-tsd-kind="Interface">FPToggleDetail</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/panchongyang/client-sdk-js/blob/61d10c4/src/FeatureProbe.ts#L139">src/FeatureProbe.ts:139</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/panchongyang/client-sdk-js/blob/b53605d/src/FeatureProbe.ts#L149">src/FeatureProbe.ts:149</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="boolValue" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>bool<wbr/>Value</span><a href="#boolValue" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -165,7 +172,7 @@
 <h5>defaultValue: <span class="tsd-signature-type">boolean</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/panchongyang/client-sdk-js/blob/61d10c4/src/FeatureProbe.ts#L123">src/FeatureProbe.ts:123</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/panchongyang/client-sdk-js/blob/b53605d/src/FeatureProbe.ts#L133">src/FeatureProbe.ts:133</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-external"><a id="emit" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>emit</span><a href="#emit" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-external">
@@ -189,7 +196,7 @@
 <li class="tsd-description">
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/panchongyang/client-sdk-js/blob/61d10c4/src/FeatureProbe.ts#L252">src/FeatureProbe.ts:252</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/panchongyang/client-sdk-js/blob/b53605d/src/FeatureProbe.ts#L263">src/FeatureProbe.ts:263</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="getUser" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>get<wbr/>User</span><a href="#getUser" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -197,7 +204,7 @@
 <li class="tsd-description">
 <h4 class="tsd-returns-title">Returns <a href="FPUser.html" class="tsd-signature-type" data-tsd-kind="Class">FPUser</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/panchongyang/client-sdk-js/blob/61d10c4/src/FeatureProbe.ts#L159">src/FeatureProbe.ts:159</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/panchongyang/client-sdk-js/blob/b53605d/src/FeatureProbe.ts#L169">src/FeatureProbe.ts:169</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="identifyUser" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>identify<wbr/>User</span><a href="#identifyUser" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -210,7 +217,7 @@
 <h5>user: <a href="FPUser.html" class="tsd-signature-type" data-tsd-kind="Class">FPUser</a></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/panchongyang/client-sdk-js/blob/61d10c4/src/FeatureProbe.ts#L163">src/FeatureProbe.ts:163</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/panchongyang/client-sdk-js/blob/b53605d/src/FeatureProbe.ts#L173">src/FeatureProbe.ts:173</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="jsonDetail" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>json<wbr/>Detail</span><a href="#jsonDetail" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -225,7 +232,7 @@
 <h5>defaultValue: <span class="tsd-signature-type">object</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <a href="../interfaces/FPToggleDetail.html" class="tsd-signature-type" data-tsd-kind="Interface">FPToggleDetail</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/panchongyang/client-sdk-js/blob/61d10c4/src/FeatureProbe.ts#L151">src/FeatureProbe.ts:151</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/panchongyang/client-sdk-js/blob/b53605d/src/FeatureProbe.ts#L161">src/FeatureProbe.ts:161</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="jsonValue" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>json<wbr/>Value</span><a href="#jsonValue" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -240,7 +247,7 @@
 <h5>defaultValue: <span class="tsd-signature-type">object</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">object</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/panchongyang/client-sdk-js/blob/61d10c4/src/FeatureProbe.ts#L135">src/FeatureProbe.ts:135</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/panchongyang/client-sdk-js/blob/b53605d/src/FeatureProbe.ts#L145">src/FeatureProbe.ts:145</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="logout" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>logout</span><a href="#logout" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -248,7 +255,7 @@
 <li class="tsd-description">
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/panchongyang/client-sdk-js/blob/61d10c4/src/FeatureProbe.ts#L167">src/FeatureProbe.ts:167</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/panchongyang/client-sdk-js/blob/b53605d/src/FeatureProbe.ts#L177">src/FeatureProbe.ts:177</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="numberDetail" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>number<wbr/>Detail</span><a href="#numberDetail" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -263,7 +270,7 @@
 <h5>defaultValue: <span class="tsd-signature-type">number</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <a href="../interfaces/FPToggleDetail.html" class="tsd-signature-type" data-tsd-kind="Interface">FPToggleDetail</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/panchongyang/client-sdk-js/blob/61d10c4/src/FeatureProbe.ts#L143">src/FeatureProbe.ts:143</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/panchongyang/client-sdk-js/blob/b53605d/src/FeatureProbe.ts#L153">src/FeatureProbe.ts:153</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="numberValue" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>number<wbr/>Value</span><a href="#numberValue" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -278,7 +285,7 @@
 <h5>defaultValue: <span class="tsd-signature-type">number</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/panchongyang/client-sdk-js/blob/61d10c4/src/FeatureProbe.ts#L127">src/FeatureProbe.ts:127</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/panchongyang/client-sdk-js/blob/b53605d/src/FeatureProbe.ts#L137">src/FeatureProbe.ts:137</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-external"><a id="off" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>off</span><a href="#off" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-external">
@@ -343,7 +350,7 @@
 <h5>key: <span class="tsd-signature-type">string</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/panchongyang/client-sdk-js/blob/61d10c4/src/FeatureProbe.ts#L278">src/FeatureProbe.ts:278</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/panchongyang/client-sdk-js/blob/b53605d/src/FeatureProbe.ts#L291">src/FeatureProbe.ts:291</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="start" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>start</span><a href="#start" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -351,7 +358,7 @@
 <li class="tsd-description">
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/panchongyang/client-sdk-js/blob/61d10c4/src/FeatureProbe.ts#L108">src/FeatureProbe.ts:108</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/panchongyang/client-sdk-js/blob/b53605d/src/FeatureProbe.ts#L115">src/FeatureProbe.ts:115</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="stop" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>stop</span><a href="#stop" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -359,7 +366,7 @@
 <li class="tsd-description">
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/panchongyang/client-sdk-js/blob/61d10c4/src/FeatureProbe.ts#L115">src/FeatureProbe.ts:115</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/panchongyang/client-sdk-js/blob/b53605d/src/FeatureProbe.ts#L125">src/FeatureProbe.ts:125</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="stringDetail" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>string<wbr/>Detail</span><a href="#stringDetail" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -374,7 +381,7 @@
 <h5>defaultValue: <span class="tsd-signature-type">string</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <a href="../interfaces/FPToggleDetail.html" class="tsd-signature-type" data-tsd-kind="Interface">FPToggleDetail</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/panchongyang/client-sdk-js/blob/61d10c4/src/FeatureProbe.ts#L147">src/FeatureProbe.ts:147</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/panchongyang/client-sdk-js/blob/b53605d/src/FeatureProbe.ts#L157">src/FeatureProbe.ts:157</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="stringValue" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>string<wbr/>Value</span><a href="#stringValue" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -389,7 +396,15 @@
 <h5>defaultValue: <span class="tsd-signature-type">string</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/panchongyang/client-sdk-js/blob/61d10c4/src/FeatureProbe.ts#L131">src/FeatureProbe.ts:131</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/panchongyang/client-sdk-js/blob/b53605d/src/FeatureProbe.ts#L141">src/FeatureProbe.ts:141</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private"><a id="successInitialized" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>success<wbr/>Initialized</span><a href="#successInitialized" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+<li class="tsd-signature tsd-anchor-link" id="successInitialized.successInitialized-1">success<wbr/>Initialized<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#successInitialized.successInitialized-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/panchongyang/client-sdk-js/blob/b53605d/src/FeatureProbe.ts#L326">src/FeatureProbe.ts:326</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private"><a id="toggleDetail" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>toggle<wbr/>Detail</span><a href="#toggleDetail" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
@@ -406,7 +421,7 @@
 <h5>valueType: <span class="tsd-signature-type">string</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <a href="../interfaces/FPToggleDetail.html" class="tsd-signature-type" data-tsd-kind="Interface">FPToggleDetail</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/panchongyang/client-sdk-js/blob/61d10c4/src/FeatureProbe.ts#L213">src/FeatureProbe.ts:213</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/panchongyang/client-sdk-js/blob/b53605d/src/FeatureProbe.ts#L224">src/FeatureProbe.ts:224</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private"><a id="toggleValue" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>toggle<wbr/>Value</span><a href="#toggleValue" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
@@ -423,7 +438,7 @@
 <h5>valueType: <span class="tsd-signature-type">string</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/panchongyang/client-sdk-js/blob/61d10c4/src/FeatureProbe.ts#L193">src/FeatureProbe.ts:193</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/panchongyang/client-sdk-js/blob/b53605d/src/FeatureProbe.ts#L204">src/FeatureProbe.ts:204</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="waitUntilReady" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>wait<wbr/>Until<wbr/>Ready</span><a href="#waitUntilReady" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -431,7 +446,7 @@
 <li class="tsd-description">
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/panchongyang/client-sdk-js/blob/61d10c4/src/FeatureProbe.ts#L119">src/FeatureProbe.ts:119</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/panchongyang/client-sdk-js/blob/b53605d/src/FeatureProbe.ts#L129">src/FeatureProbe.ts:129</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="newForTest" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagStatic">Static</code> <span>new<wbr/>For<wbr/>Test</span><a href="#newForTest" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -447,7 +462,7 @@
 <h5><span class="tsd-signature-symbol">[</span>key: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]: </span><span class="tsd-signature-type">any</span></h5></li></ul></li></ul></div>
 <h4 class="tsd-returns-title">Returns <a href="FeatureProbe.html" class="tsd-signature-type" data-tsd-kind="Class">FeatureProbe</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/panchongyang/client-sdk-js/blob/61d10c4/src/FeatureProbe.ts#L172">src/FeatureProbe.ts:172</a></li></ul></aside></li></ul></section></section></div>
+<li>Defined in <a href="https://github.com/panchongyang/client-sdk-js/blob/b53605d/src/FeatureProbe.ts#L182">src/FeatureProbe.ts:182</a></li></ul></aside></li></ul></section></section></div>
 <div class="col-4 col-menu menu-sticky-wrap menu-highlight">
 <div class="tsd-navigation settings">
 <details class="tsd-index-accordion"><summary class="tsd-accordion-summary">
@@ -478,6 +493,7 @@
 <li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="FeatureProbe.html#eventsUrl" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg>events<wbr/>Url</a></li>
 <li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="FeatureProbe.html#readyPromise" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg>ready<wbr/>Promise</a></li>
 <li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="FeatureProbe.html#refreshInterval" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg>refresh<wbr/>Interval</a></li>
+<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="FeatureProbe.html#status" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg>status</a></li>
 <li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="FeatureProbe.html#timer" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg>timer?</a></li>
 <li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="FeatureProbe.html#toggles" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg>toggles</a></li>
 <li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="FeatureProbe.html#togglesUrl" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg>toggles<wbr/>Url</a></li>
@@ -502,6 +518,7 @@
 <li class="tsd-kind-method tsd-parent-kind-class"><a href="FeatureProbe.html#stop" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>stop</a></li>
 <li class="tsd-kind-method tsd-parent-kind-class"><a href="FeatureProbe.html#stringDetail" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>string<wbr/>Detail</a></li>
 <li class="tsd-kind-method tsd-parent-kind-class"><a href="FeatureProbe.html#stringValue" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>string<wbr/>Value</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="FeatureProbe.html#successInitialized" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>success<wbr/>Initialized</a></li>
 <li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="FeatureProbe.html#toggleDetail" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>toggle<wbr/>Detail</a></li>
 <li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="FeatureProbe.html#toggleValue" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>toggle<wbr/>Value</a></li>
 <li class="tsd-kind-method tsd-parent-kind-class"><a href="FeatureProbe.html#waitUntilReady" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>wait<wbr/>Until<wbr/>Ready</a></li>

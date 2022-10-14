@@ -10,10 +10,50 @@ afterEach(() => {
   _fetch.resetMocks();
 });
 
-test("feature probe init with invalid url", () => {
+test("feature probe init with invalid param", () => {
   expect(() => {
     new FeatureProbe({
       remoteUrl: "invalid url",
+      clientSdkKey: "client-sdk-key1",
+      user: new FPUser(),
+    });
+  }).toThrow();
+
+  expect(() => {
+    new FeatureProbe({
+      remoteUrl: "invalid url",
+      clientSdkKey: "",
+      user: new FPUser(),
+    });
+  }).toThrow();
+
+  expect(() => {
+    new FeatureProbe({
+      remoteUrl: "http://127.0.0.1:4007",
+      clientSdkKey: "client-sdk-key1",
+      user: new FPUser(),
+      refreshInterval: -1,
+    });
+  }).toThrow();
+
+  expect(() => {
+    new FeatureProbe({
+      clientSdkKey: "client-sdk-key1",
+      user: new FPUser(),
+    });
+  }).toThrow();
+
+  expect(() => {
+    new FeatureProbe({
+      togglesUrl: "http://127.0.0.1:4007",
+      clientSdkKey: "client-sdk-key1",
+      user: new FPUser(),
+    });
+  }).toThrow();
+
+  expect(() => {
+    new FeatureProbe({
+      eventsUrl: "http://127.0.0.1:4007",
       clientSdkKey: "client-sdk-key1",
       user: new FPUser(),
     });
@@ -41,6 +81,7 @@ test("feature probe request", (done) => {
   fp.start();
   fp.on("ready", function () {
     expect(fp.boolValue("bool_toggle", false)).toBe(true);
+    fp.stop();
     done();
   });
 });
@@ -79,6 +120,7 @@ test("feature probe number toggle", (done) => {
     user: user,
   });
   fp.start();
+
   fp.on("ready", function () {
     expect(fp.numberValue("number_toggle", 0)).toBe(1);
     expect(fp.numberValue("string_toggle", 0)).toBe(0);
@@ -150,6 +192,22 @@ test("feature probe json toggle", (done) => {
   });
 });
 
+test("feature probe all toggle", (done) => {
+  _fetch.mockResponseOnce(JSON.stringify(data));
+  const user = new FPUser().with("city", "2");
+  let fp = new FeatureProbe({
+    remoteUrl: "http://127.0.0.1:4007",
+    clientSdkKey: "client-sdk-key1",
+    user: user,
+  });
+  fp.start();
+
+  fp.on("ready", function () {
+    expect(fp.allToggles()).toMatchObject(data);
+    done();
+  });
+});
+
 test("feature probe unit testing", (done) => {
   let fp = FeatureProbe.newForTest({ testToggle: true });
   fp.start();
@@ -159,4 +217,90 @@ test("feature probe unit testing", (done) => {
     expect(t).toBe(true);
     done();
   });
+});
+
+test("feature probe used toggle value before ready", (done) => {
+  _fetch.mockResponseOnce(JSON.stringify(data));
+  const user = new FPUser().with("city", "2");
+  let fp = new FeatureProbe({
+    remoteUrl: "http://127.0.0.1:4007",
+    clientSdkKey: "client-sdk-key1",
+    user: user,
+  });
+  fp.start();
+
+  expect(fp.boolValue("bool_toggle", false)).toBe(false);
+  expect(fp.boolDetail("bool_toggle", false)).toMatchObject({
+    value: false,
+    ruleIndex: null,
+    variationIndex: null,
+    version: 0,
+    reason: "Not ready",
+  });
+  done();
+});
+
+test("feature probe used toggle value with error key", (done) => {
+  _fetch.mockResponseOnce(JSON.stringify(data));
+  const user = new FPUser().with("city", "2");
+  let fp = new FeatureProbe({
+    remoteUrl: "http://127.0.0.1:4007",
+    clientSdkKey: "client-sdk-key1",
+    user: user,
+  });
+  fp.start();
+
+  fp.on('ready', () => {
+    expect(fp.boolValue("error_toggle", false)).toBe(false);
+    expect(fp.boolDetail("error_toggle", false)).toMatchObject({
+      value: false,
+      ruleIndex: null,
+      variationIndex: null,
+      version: null,
+      reason: "Toggle: [error_toggle] not found",
+    });
+    done();
+  });
+});
+
+test("feature probe logout", (done) => {
+  _fetch.mockResponseOnce(JSON.stringify(data));
+  const user = new FPUser().with("city", "2");
+  expect(user.get('city')).toBe('2');
+  let fp = new FeatureProbe({
+    remoteUrl: "http://127.0.0.1:4007",
+    clientSdkKey: "client-sdk-key1",
+    user: user,
+  });
+  fp.logout();
+  expect(fp.getUser().get('city')).toBe(undefined);
+  done();
+});
+
+test("feature promise api", (done) => {
+  _fetch.mockResponseOnce(JSON.stringify(data));
+  let fp = new FeatureProbe({
+    remoteUrl: "http://127.0.0.1:4007",
+    clientSdkKey: "client-sdk-key1",
+    user: new FPUser(),
+  });
+  fp.start();
+
+  fp.waitUntilReady().then(() => {
+    done();
+  });
+});
+
+test("feature probe fetch error", (done) => {
+  _fetch.mockRejectOnce(new Error("test error"));
+
+  let fp = new FeatureProbe({
+    remoteUrl: "http://error.error",
+    clientSdkKey: "client-sdk-key1",
+    user: new FPUser(),
+    refreshInterval: 10000,
+  });
+  fp.start();
+
+  done();
 });
