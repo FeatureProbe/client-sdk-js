@@ -2,8 +2,8 @@ export class FPUser {
   private key: string;
   private attrs: { [key: string]: string };
 
-  constructor() {
-    this.key = String(Date.now());
+  constructor(key?: string) {
+    this.key = String(key || Date.now());
     this.attrs = {};
   }
 

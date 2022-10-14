@@ -33,37 +33,6 @@
           FeatureProbe evaluation boolean type toggle detail is : <span class="result" id="boolean-detail"></span>
         </li>
       </ul>
-
-      <h3>string type</h3>
-      <ul>
-        <li>
-          FeatureProbe evaluation string type toggle result is : <span class="result" id="string-result"></span>
-        </li>
-        <li>
-          FeatureProbe evaluation string type toggle detail is : <span class="result" id="string-detail"></span>
-        </li>
-      </ul>
-
-      <h3>number type</h3>
-      <ul>
-        <li>
-          FeatureProbe evaluation number type toggle result is : <span class="result" id="number-result"></span>
-        </li>
-        <li>
-          FeatureProbe evaluation number type toggle detail is : <span class="result" id="number-detail"></span>
-        </li>
-      </ul>
-
-      <h3>json type</h3>
-      <ul>
-        <li>
-          FeatureProbe evaluation json type toggle result is : <span class="result" id="json-result"></span>
-        </li>
-        <li>
-          FeatureProbe evaluation json type toggle detail is : <span class="result" id="json-detail"></span>
-        </li>
-      </ul>
-
     </div>
     <script>
       const user = new featureProbe.FPUser();
@@ -78,25 +47,10 @@
 
       fpClient.start();
       fpClient.on("ready", function() {
-        const boolValue = fpClient.boolValue("bool_toggle_key", false);
+        const boolValue = fpClient.boolValue("campaign_allow_list", false);
         document.getElementById("boolean-result").innerText = boolValue;
-        const boolDetail = fpClient.boolDetail("bool_toggle_key", false);
+        const boolDetail = fpClient.boolDetail("campaign_allow_list", false);
         document.getElementById("boolean-detail").innerText = JSON.stringify(boolDetail);
-
-        const stringValue = fpClient.stringValue("string_toggle_key", "default");
-        document.getElementById("string-result").innerText = stringValue;
-        const stringDetail = fpClient.stringDetail("string_toggle_key", "default");
-        document.getElementById("string-detail").innerText = JSON.stringify(stringDetail);
-
-        const numberValue = fpClient.numberValue("number_toggle_key", 0);
-        document.getElementById("number-result").innerText = numberValue;
-        const numberDetail = fpClient.numberDetail("number_toggle_key", 0);
-        document.getElementById("number-detail").innerText = JSON.stringify(numberDetail);
-
-        const jsonValue = fpClient.jsonValue("json_toggle_key", {});
-        document.getElementById("json-result").innerText = JSON.stringify(jsonValue);
-        const jsonDetail = fpClient.jsonDetail("json_toggle_key", {});
-        document.getElementById("json-detail").innerText = JSON.stringify(jsonDetail);
       });
     </script>
   </body>
