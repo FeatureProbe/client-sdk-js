@@ -16,7 +16,7 @@ const EVENTS = {
 const STATUS = {
   PENDING: "pending",
   READY: "ready",
-}
+};
 
 interface IValue {
   count: number;
@@ -324,7 +324,7 @@ class FeatureProbe extends TinyEmitter {
   }
 
   private successInitialized() {
-    if(this.status === STATUS.PENDING) {
+    if (this.status === STATUS.PENDING) {
       this.status = STATUS.READY;
       setTimeout(() => {
         this.emit(EVENTS.READY);
