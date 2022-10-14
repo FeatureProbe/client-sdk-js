@@ -13,6 +13,11 @@ const EVENTS = {
   ERROR: "error",
 };
 
+const STATUS = {
+  PENDING: "pending",
+  READY: "ready",
+}
+
 interface IValue {
   count: number;
   value: boolean | string | number | object;
@@ -58,6 +63,8 @@ class FeatureProbe extends TinyEmitter {
   private user: FPUser;
   private toggles: { [key: string]: FPToggleDetail } | undefined;
   private timer?: any;
+  private readyPromise: Promise<void>;
+  private status: string;
 
   constructor({
     remoteUrl,
@@ -75,16 +82,16 @@ class FeatureProbe extends TinyEmitter {
       throw new Error("refreshInterval is invalid");
     }
 
+    if (!remoteUrl && !togglesUrl && !eventsUrl) {
+      throw new Error("remoteUrl is required");
+    }
+
     if (!remoteUrl && !togglesUrl) {
       throw new Error("remoteUrl or togglesUrl is required");
     }
 
     if (!remoteUrl && !eventsUrl) {
       throw new Error("remoteUrl or eventsUrl is required");
-    }
-
-    if (!remoteUrl && !togglesUrl && !eventsUrl) {
-      throw new Error("remoteUrl is required");
     }
 
     this.togglesUrl = new URL(
@@ -95,17 +102,32 @@ class FeatureProbe extends TinyEmitter {
     this.clientSdkKey = clientSdkKey;
     this.refreshInterval = refreshInterval;
     this.toggles = undefined;
+    this.readyPromise = new Promise((resolve) => {
+      const onReadyCallback = () => {
+        this.off(EVENTS.READY, onReadyCallback);
+        resolve();
+      };
+      this.on(EVENTS.READY, onReadyCallback);
+    });
+    this.status = STATUS.PENDING;
   }
 
   public async start() {
     const interval = this.refreshInterval;
-    await this.fetchToggles();
-    this.emit(EVENTS.READY);
-    this.timer = setInterval(() => this.fetchToggles(), interval);
+    try {
+      await this.fetchToggles();
+    } finally {
+      this.timer = setInterval(() => this.fetchToggles(), interval);
+    }
+
   }
 
   public stop() {
     clearInterval(this.timer);
+  }
+
+  public waitUntilReady(): Promise<void> {
+    return this.readyPromise;
   }
 
   public boolValue(key: string, defaultValue: boolean): boolean {
@@ -145,7 +167,16 @@ class FeatureProbe extends TinyEmitter {
   }
 
   public getUser(): FPUser {
-    return Object.assign({}, this.user);
+    return this.user;
+  }
+
+  public identifyUser(user: FPUser) {
+    this.user = user;
+  }
+
+  public logout() {
+    const user = new FPUser();
+    this.identifyUser(user);
   }
 
   static newForTest(toggles: { [key: string]: any }): FeatureProbe {
@@ -166,6 +197,7 @@ class FeatureProbe extends TinyEmitter {
       };
     }
     fp.toggles = _toggles;
+    fp.successInitialized();
     return fp;
   }
 
@@ -234,7 +266,7 @@ class FeatureProbe extends TinyEmitter {
     const url = this.togglesUrl;
     url.searchParams.set("user", userParam);
 
-    await fetch(url.toString(), {
+    return fetch(url.toString(), {
       method: "GET",
       cache: "no-cache",
       headers: {
@@ -248,9 +280,11 @@ class FeatureProbe extends TinyEmitter {
       })
       .then((json) => {
         this.toggles = json;
+        this.successInitialized();
       })
       .catch((e) => {
-        this.emit(EVENTS.ERROR, e);
+        //this.emit(EVENTS.ERROR, e);
+        console.error(e);
       });
   }
 
@@ -285,6 +319,15 @@ class FeatureProbe extends TinyEmitter {
           UA: UA,
         },
         body: JSON.stringify(payload),
+      });
+    }
+  }
+
+  private successInitialized() {
+    if(this.status === STATUS.PENDING) {
+      this.status = STATUS.READY;
+      setTimeout(() => {
+        this.emit(EVENTS.READY);
       });
     }
   }
