@@ -14,7 +14,8 @@
         color: #556ee6;
       }
     </style>
-    <script type="text/javascript" src="https://unpkg.com/featureprobe-client-sdk-js@latest/dist/featureprobe-client-sdk-js.min.js"></script>
+    <!-- <script type="text/javascript" src="https://unpkg.com/featureprobe-client-sdk-js@latest/dist/featureprobe-client-sdk-js.min.js"></script> -->
+    <script type="text/javascript" src="../dist/featureprobe-client-sdk-js.min.js"></script>
   </head>
 
   <body>
@@ -45,13 +46,27 @@
         refreshInterval: 5000,
       });
 
-      fpClient.start();
+      fpClient.on("cache_ready", function() {
+        console.log('cache_ready---', fpClient.allToggles());
+      });
+
       fpClient.on("ready", function() {
+        console.log("ready");
         const boolValue = fpClient.boolValue("campaign_allow_list", false);
         document.getElementById("boolean-result").innerText = boolValue;
         const boolDetail = fpClient.boolDetail("campaign_allow_list", false);
         document.getElementById("boolean-detail").innerText = JSON.stringify(boolDetail);
       });
+
+      fpClient.on("update", function() {
+        console.log("update");
+      });
+
+      fpClient.on("error", function() {
+        console.log("error");
+      });
+
+      fpClient.start();
     </script>
   </body>
 </html>

@@ -10,7 +10,7 @@ afterEach(() => {
   _fetch.resetMocks();
 });
 
-test("feature probe init with invalid param", () => {
+test("FeatureProbe init with invalid param", () => {
   expect(() => {
     new FeatureProbe({
       remoteUrl: "invalid url",
@@ -60,7 +60,7 @@ test("feature probe init with invalid param", () => {
   }).toThrow();
 });
 
-test("feature probe init", () => {
+test("FeatureProbe init", () => {
   expect(
     new FeatureProbe({
       remoteUrl: "http://127.0.0.1:4007",
@@ -70,7 +70,7 @@ test("feature probe init", () => {
   ).not.toBeNull();
 });
 
-test("feature probe request", (done) => {
+test("FeatureProbe request", (done) => {
   _fetch.mockResponseOnce(JSON.stringify(data));
   const user = new FPUser().with("city", "2");
   let fp = new FeatureProbe({
@@ -86,7 +86,7 @@ test("feature probe request", (done) => {
   });
 });
 
-test("feature probe bool toggle", (done) => {
+test("FeatureProbe bool toggle", (done) => {
   _fetch.mockResponseOnce(JSON.stringify(data));
   const user = new FPUser().with("city", "2");
   let fp = new FeatureProbe({
@@ -111,7 +111,7 @@ test("feature probe bool toggle", (done) => {
   });
 });
 
-test("feature probe number toggle", (done) => {
+test("FeatureProbe number toggle", (done) => {
   _fetch.mockResponseOnce(JSON.stringify(data));
   const user = new FPUser().with("city", "2");
   let fp = new FeatureProbe({
@@ -137,7 +137,7 @@ test("feature probe number toggle", (done) => {
   });
 });
 
-test("feature probe string toggle", (done) => {
+test("FeatureProbe string toggle", (done) => {
   _fetch.mockResponseOnce(JSON.stringify(data));
   const user = new FPUser().with("city", "2");
   let fp = new FeatureProbe({
@@ -163,7 +163,7 @@ test("feature probe string toggle", (done) => {
   });
 });
 
-test("feature probe json toggle", (done) => {
+test("FeatureProbe json toggle", (done) => {
   _fetch.mockResponseOnce(JSON.stringify(data));
   const user = new FPUser().with("city", "2");
   let fp = new FeatureProbe({
@@ -192,7 +192,7 @@ test("feature probe json toggle", (done) => {
   });
 });
 
-test("feature probe all toggle", (done) => {
+test("FeatureProbe all toggle", (done) => {
   _fetch.mockResponseOnce(JSON.stringify(data));
   const user = new FPUser().with("city", "2");
   let fp = new FeatureProbe({
@@ -208,9 +208,8 @@ test("feature probe all toggle", (done) => {
   });
 });
 
-test("feature probe unit testing", (done) => {
+test("FeatureProbe unit testing", (done) => {
   let fp = FeatureProbe.newForTest({ testToggle: true });
-  fp.start();
 
   fp.on("ready", function () {
     let t = fp.boolValue("testToggle", false);
@@ -219,7 +218,7 @@ test("feature probe unit testing", (done) => {
   });
 });
 
-test("feature probe used toggle value before ready", (done) => {
+test("FeatureProbe used toggle value before ready", (done) => {
   _fetch.mockResponseOnce(JSON.stringify(data));
   const user = new FPUser().with("city", "2");
   let fp = new FeatureProbe({
@@ -240,7 +239,7 @@ test("feature probe used toggle value before ready", (done) => {
   done();
 });
 
-test("feature probe used toggle value with error key", (done) => {
+test("FeatureProbe used toggle value with error key", (done) => {
   _fetch.mockResponseOnce(JSON.stringify(data));
   const user = new FPUser().with("city", "2");
   let fp = new FeatureProbe({
@@ -263,7 +262,7 @@ test("feature probe used toggle value with error key", (done) => {
   });
 });
 
-test("feature probe logout", (done) => {
+test("FeatureProbe logout", (done) => {
   _fetch.mockResponseOnce(JSON.stringify(data));
   const user = new FPUser().with("city", "2");
   expect(user.get('city')).toBe('2');
@@ -291,7 +290,7 @@ test("feature promise api", (done) => {
   });
 });
 
-test("feature probe fetch error", (done) => {
+test("FeatureProbe fetch error", (done) => {
   _fetch.mockRejectOnce(new Error("test error"));
 
   let fp = new FeatureProbe({
@@ -303,4 +302,22 @@ test("feature probe fetch error", (done) => {
   fp.start();
 
   done();
+});
+
+test("FeatureProbe fetch error trigger error event", (done) => {
+  _fetch.mockReject(new Error("test error"));
+
+  let fp = new FeatureProbe({
+    remoteUrl: "http://error.error",
+    clientSdkKey: "client-sdk-key1",
+    user: new FPUser(),
+    refreshInterval: 10000,
+    timeoutInterval: 1000,
+  });
+
+  fp.on('error', () =>{
+    done();
+  });
+
+  fp.start();
 });
