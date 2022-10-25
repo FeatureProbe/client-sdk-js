@@ -76,12 +76,18 @@ class FeatureProbe extends TinyEmitter {
     this.status = STATUS.PENDING;
     this.storage = new StorageProvider();
 
-    this.readyPromise = new Promise((resolve) => {
+    this.readyPromise = new Promise<void>((resolve, reject) => {
       const onReadyCallback = () => {
         this.off(EVENTS.READY, onReadyCallback);
         resolve();
       };
+      const onErrorCallback = (err: Error) => {
+        this.off(EVENTS.ERROR, onErrorCallback);
+        reject(err);
+      };
+
       this.on(EVENTS.READY, onReadyCallback);
+      this.on(EVENTS.ERROR, onErrorCallback);
     });
   }
 

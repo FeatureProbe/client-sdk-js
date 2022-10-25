@@ -283,11 +283,14 @@ test("feature promise api", (done) => {
     clientSdkKey: "client-sdk-key1",
     user: new FPUser(),
   });
-  fp.start();
 
   fp.waitUntilReady().then(() => {
     done();
+  }).catch(() => {
+    done();
   });
+
+  fp.start();
 });
 
 test("FeatureProbe fetch error", (done) => {
