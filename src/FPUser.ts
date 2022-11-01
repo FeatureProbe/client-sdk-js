@@ -12,7 +12,7 @@ export class FPUser {
   }
 
   /**
-   * Add an attribute to the FPUser client.
+   * Upload attributes to the FPUser client.
    * 
    * @param attrName
    *   The attribute key.

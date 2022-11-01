@@ -21,19 +21,19 @@ export interface IParams {
   access: IAccess;
 }
 
-export interface FPToggleDetail {
+export interface FPDetail {
   /**
-   * Return value of a toggle for the current user.
+   * The value corresponding to the rule in the UI platform.
    */
   value: boolean | string | number | object;
 
   /**
-   * The index of the matching rule.
+   * The sequence number of the rule in the UI configuration that hit the rule.
    */
   ruleIndex: number | null;
 
   /**
-   * The index of the matching variation.
+   * The sequence number of the variation in the UI platform.
    */
   variationIndex: number | null;
 
@@ -43,14 +43,14 @@ export interface FPToggleDetail {
   version: number | null;
 
   /**
-   * The failed reason.
+   * Why return this value, like disabled, default, not exist and so on.
    */
   reason: string;
 }
 
-export interface FPOptions {
+export interface FPConfig {
   /**
-   * The unified URL to get toggles and post events.
+   * The unified URL to connect FeatureProbe Server.
    */
   remoteUrl?: string;
 
@@ -75,12 +75,12 @@ export interface FPOptions {
   user: FPUser;
 
   /**
-   * The SDK check for updated in millisecond.
+   * Milliseconds for SDK to check for update.
    */
   refreshInterval?: number;
 
   /**
-   * Timeout for SDK initialization, SDK will emit an `error` event when timeout is reaching.
+   * Milliseconds for SDK to initialize, SDK will emit an `error` event when milliseconds reach.
    */
   timeoutInterval?: number
 }
