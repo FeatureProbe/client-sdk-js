@@ -283,6 +283,8 @@ class FeatureProbe extends TinyEmitter {
    */
   public identifyUser(user: FPUser) {
     this.user = user;
+    this.toggles = undefined;
+    this.fetchToggles();
   }
 
   /**
