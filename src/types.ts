@@ -55,14 +55,19 @@ export interface FPConfig {
   remoteUrl?: string;
 
   /**
-   * The specific URL to get toggles, once set, remoteUrl will be ignored.
+   * The specific URL to get toggles, if not set, will generate from remoteUrl will be ignored.
    */
   togglesUrl?: string;
 
   /**
-   * The specific URL to post events, once set, remoteUrl will be ignored.
+   * The specific URL to post events, if not set, will generate from remoteUrl will be ignored.
    */
   eventsUrl?: string;
+
+  /**
+   * The specific URL to receive realtime events, if not set, will generate from remoteUrl will be ignored.
+   */
+  realtimeUrl?: string;
 
   /**
    * The Client SDK Key is used to authentification.
