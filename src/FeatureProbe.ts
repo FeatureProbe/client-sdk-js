@@ -18,6 +18,7 @@ const EVENTS = {
 };
 
 const STATUS = {
+  START: "start",
   PENDING: "pending",
   READY: "ready",
   ERROR: "error",
@@ -77,7 +78,7 @@ class FeatureProbe extends TinyEmitter {
     this.clientSdkKey = clientSdkKey;
     this.refreshInterval = refreshInterval;
     this.timeoutInterval = timeoutInterval;
-    this.status = STATUS.PENDING;
+    this.status = STATUS.START;
     this.storage = new StorageProvider();
     this.readyPromise = null;
   }
@@ -86,6 +87,11 @@ class FeatureProbe extends TinyEmitter {
    * Start the FeatureProbe client.
    */
   public async start() {
+    if (this.status !== STATUS.START) {
+      return;
+    }
+    this.status = STATUS.PENDING;
+
     this.timeoutTimer = setTimeout(() => {
       if (this.status === STATUS.PENDING) {
         this.errorInitialized();
