@@ -106,3 +106,13 @@ export interface FPStorageProvider {
    */
   getItem: (key: string) => Promise<any>;
 }
+
+export interface IPlatForm {
+  _fetch: any;
+  localStorage: FPStorageProvider;
+  UA: string;
+}
+
+export interface IOption {
+  platform: IPlatForm
+}

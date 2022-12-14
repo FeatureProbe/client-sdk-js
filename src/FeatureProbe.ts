@@ -1,13 +1,14 @@
-import "whatwg-fetch";
+// import "whatwg-fetch";
 import { TinyEmitter } from "tiny-emitter";
 import { Base64 } from "js-base64";
-import StorageProvider from "./localStorage";
+// import StorageProvider from "./localStorage";
 import { FPUser } from "./FPUser";
 import { FPDetail, FPStorageProvider, FPConfig, IParams } from "./types";
-import pkg from '../package.json';
+import { platform } from "./index.js";
+// import pkg from '../package.json';
 
-const PKG_VERSION = pkg.version;
-const UA = "JS/" + PKG_VERSION;
+// const PKG_VERSION = pkg.version;
+// const UA = "JS/" + PKG_VERSION;
 const KEY = 'repository';
 
 const EVENTS = {
@@ -79,7 +80,7 @@ class FeatureProbe extends TinyEmitter {
     this.refreshInterval = refreshInterval;
     this.timeoutInterval = timeoutInterval;
     this.status = STATUS.START;
-    this.storage = new StorageProvider();
+    this.storage = platform.localStorage;
     this.readyPromise = null;
   }
 
@@ -389,16 +390,16 @@ class FeatureProbe extends TinyEmitter {
     const url = this.togglesUrl;
     url.searchParams.set("user", userParam);
 
-    return fetch(url.toString(), {
+    return platform._fetch(url.toString(), {
       method: "GET",
       cache: "no-cache",
       headers: {
         Authorization: this.clientSdkKey,
         "Content-Type": "application/json",
-        UA: UA,
+        UA: platform.UA,
       },
     })
-    .then(response => {
+    .then((response: { status: number; statusText: string | undefined; }) => {
       if (response.status >= 200 && response.status < 300) {
         return response;
       } else {
@@ -406,8 +407,8 @@ class FeatureProbe extends TinyEmitter {
         throw error;
       }
     })
-    .then(response => response.json())
-    .then(json => {
+    .then((response: { json: () => any; }) => response.json())
+    .then((json: { [key: string]: FPDetail; } | undefined) => {
       if (this.status !== STATUS.ERROR) {
         this.toggles = json;
 
@@ -420,7 +421,7 @@ class FeatureProbe extends TinyEmitter {
         this.storage.setItem(KEY, JSON.stringify(json));
       }
     })
-    .catch((e) => {
+    .catch((e: any) => {
       console.error('FeatureProbe JS SDK: Error getting toggles: ', e);
     });
   }
@@ -447,17 +448,17 @@ class FeatureProbe extends TinyEmitter {
         },
       ];
 
-      fetch(this.eventsUrl.toString(), {
+      platform._fetch(this.eventsUrl.toString(), {
         cache: "no-cache",
         method: "POST",
         headers: {
           Authorization: this.clientSdkKey,
           "Content-Type": "application/json",
-          UA: UA,
+          UA: platform.UA,
         },
         body: JSON.stringify(payload),
       })
-      .then(response => {
+      .then((response: { status: number; statusText: string | undefined; }) => {
         if (response.status >= 200 && response.status < 300) {
           return response;
         }
@@ -466,7 +467,7 @@ class FeatureProbe extends TinyEmitter {
           throw error;
         }
       })
-      .catch((e) => {
+      .catch((e: any) => {
         console.error('FeatureProbe JS SDK: Error reporting events: ', e);
       });
     }
