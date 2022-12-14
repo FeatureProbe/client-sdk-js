@@ -1,14 +1,8 @@
-// import "whatwg-fetch";
 import { TinyEmitter } from "tiny-emitter";
 import { Base64 } from "js-base64";
-// import StorageProvider from "./localStorage";
 import { FPUser } from "./FPUser";
 import { FPDetail, FPStorageProvider, FPConfig, IParams } from "./types";
-import { platform } from "./index.js";
-// import pkg from '../package.json';
-
-// const PKG_VERSION = pkg.version;
-// const UA = "JS/" + PKG_VERSION;
+import { platform } from "./index";
 const KEY = 'repository';
 
 const EVENTS = {
