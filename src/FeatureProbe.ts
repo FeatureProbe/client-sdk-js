@@ -24,8 +24,8 @@ const STATUS = {
  * which provides access to all of the SDK's functionality.
  */
 class FeatureProbe extends TinyEmitter {
-  private togglesUrl: URL;
-  private eventsUrl: URL;
+  private togglesUrl: string;
+  private eventsUrl: string;
   private refreshInterval: number;
   private clientSdkKey: string;
   private user: FPUser;
@@ -67,8 +67,8 @@ class FeatureProbe extends TinyEmitter {
     }
 
     this.toggles = undefined;
-    this.togglesUrl = new URL(togglesUrl || remoteUrl + "/api/client-sdk/toggles");
-    this.eventsUrl = new URL(eventsUrl || remoteUrl + "/api/events");
+    this.togglesUrl = togglesUrl || remoteUrl + "/api/client-sdk/toggles";
+    this.eventsUrl = eventsUrl || remoteUrl + "/api/events";
     this.user = user;
     this.clientSdkKey = clientSdkKey;
     this.refreshInterval = refreshInterval;
@@ -382,42 +382,34 @@ class FeatureProbe extends TinyEmitter {
     const userStr = JSON.stringify(this.user);
     const userParam = Base64.encode(userStr);
     const url = this.togglesUrl;
-    url.searchParams.set("user", userParam);
 
-    return platform._fetch(url.toString(), {
-      method: "GET",
-      cache: "no-cache",
-      headers: {
+    platform.httpRequest.get(
+      url, 
+      {
         Authorization: this.clientSdkKey,
         "Content-Type": "application/json",
         UA: platform.UA,
-      },
-    })
-    .then((response: { status: number; statusText: string | undefined; }) => {
-      if (response.status >= 200 && response.status < 300) {
-        return response;
-      } else {
-        const error: Error = new Error(response.statusText);
-        throw error;
-      }
-    })
-    .then((response: { json: () => any; }) => response.json())
-    .then((json: { [key: string]: FPDetail; } | undefined) => {
-      if (this.status !== STATUS.ERROR) {
-        this.toggles = json;
+      }, 
+      {
+        user: userParam
+      }, 
+      (json: { [key: string]: FPDetail; } | undefined) => {
+        if (this.status !== STATUS.ERROR) {
+          this.toggles = json;
 
-        if (this.status === STATUS.PENDING) {
-          this.successInitialized();
-        } else if (this.status === STATUS.READY) {
-          this.emit(EVENTS.UPDATE);
+          if (this.status === STATUS.PENDING) {
+            this.successInitialized();
+          } else if (this.status === STATUS.READY) {
+            this.emit(EVENTS.UPDATE);
+          }
+
+          this.storage.setItem(KEY, JSON.stringify(json));
         }
-
-        this.storage.setItem(KEY, JSON.stringify(json));
+      }, 
+      (error: string) => {
+        console.error('FeatureProbe JS SDK: Error getting toggles: ', error);
       }
-    })
-    .catch((e: any) => {
-      console.error('FeatureProbe JS SDK: Error getting toggles: ', e);
-    });
+    )
   }
 
   private async sendEvents(key: string): Promise<void> {
@@ -442,28 +434,19 @@ class FeatureProbe extends TinyEmitter {
         },
       ];
 
-      platform._fetch(this.eventsUrl.toString(), {
-        cache: "no-cache",
-        method: "POST",
-        headers: {
+      platform.httpRequest.post(
+        this.eventsUrl, 
+        {
           Authorization: this.clientSdkKey,
           "Content-Type": "application/json",
           UA: platform.UA,
-        },
-        body: JSON.stringify(payload),
-      })
-      .then((response: { status: number; statusText: string | undefined; }) => {
-        if (response.status >= 200 && response.status < 300) {
-          return response;
+        }, 
+        JSON.stringify(payload), 
+        () => {}, 
+        (error: string) => {
+          console.error('FeatureProbe JS SDK: Error reporting events: ', error);
         }
-        else {
-          const error: Error = new Error(response.statusText);
-          throw error;
-        }
-      })
-      .catch((e: any) => {
-        console.error('FeatureProbe JS SDK: Error reporting events: ', e);
-      });
+      )
     }
   }
 

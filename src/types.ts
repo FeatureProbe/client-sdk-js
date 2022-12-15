@@ -108,9 +108,9 @@ export interface FPStorageProvider {
 }
 
 export interface IPlatForm {
-  _fetch: any;
   localStorage: FPStorageProvider;
   UA: string;
+  httpRequest: any;
 }
 
 export interface IOption {
