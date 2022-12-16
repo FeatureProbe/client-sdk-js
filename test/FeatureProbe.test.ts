@@ -13,7 +13,6 @@ afterEach(() => {
 test("FeatureProbe init with invalid param", () => {
   expect(() => {
     new FeatureProbe({
-      remoteUrl: "invalid url",
       clientSdkKey: "client-sdk-key1",
       user: new FPUser(),
     });

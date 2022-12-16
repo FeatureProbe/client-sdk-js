@@ -1,13 +1,8 @@
-import "whatwg-fetch";
 import { TinyEmitter } from "tiny-emitter";
 import { Base64 } from "js-base64";
-import StorageProvider from "./localStorage";
 import { FPUser } from "./FPUser";
 import { FPDetail, FPStorageProvider, FPConfig, IParams } from "./types";
-import pkg from '../package.json';
-
-const PKG_VERSION = pkg.version;
-const UA = "JS/" + PKG_VERSION;
+import { getPlatform } from "./platform";
 const KEY = 'repository';
 
 const EVENTS = {
@@ -29,8 +24,8 @@ const STATUS = {
  * which provides access to all of the SDK's functionality.
  */
 class FeatureProbe extends TinyEmitter {
-  private togglesUrl: URL;
-  private eventsUrl: URL;
+  private togglesUrl: string;
+  private eventsUrl: string;
   private refreshInterval: number;
   private clientSdkKey: string;
   private user: FPUser;
@@ -72,14 +67,14 @@ class FeatureProbe extends TinyEmitter {
     }
 
     this.toggles = undefined;
-    this.togglesUrl = new URL(togglesUrl || remoteUrl + "/api/client-sdk/toggles");
-    this.eventsUrl = new URL(eventsUrl || remoteUrl + "/api/events");
+    this.togglesUrl = togglesUrl || remoteUrl + "/api/client-sdk/toggles";
+    this.eventsUrl = eventsUrl || remoteUrl + "/api/events";
     this.user = user;
     this.clientSdkKey = clientSdkKey;
     this.refreshInterval = refreshInterval;
     this.timeoutInterval = timeoutInterval;
     this.status = STATUS.START;
-    this.storage = new StorageProvider();
+    this.storage = getPlatform().localStorage;
     this.readyPromise = null;
   }
 
@@ -387,27 +382,14 @@ class FeatureProbe extends TinyEmitter {
     const userStr = JSON.stringify(this.user);
     const userParam = Base64.encode(userStr);
     const url = this.togglesUrl;
-    url.searchParams.set("user", userParam);
 
-    return fetch(url.toString(), {
-      method: "GET",
-      cache: "no-cache",
-      headers: {
-        Authorization: this.clientSdkKey,
-        "Content-Type": "application/json",
-        UA: UA,
-      },
-    })
-    .then(response => {
-      if (response.status >= 200 && response.status < 300) {
-        return response;
-      } else {
-        const error: Error = new Error(response.statusText);
-        throw error;
-      }
-    })
-    .then(response => response.json())
-    .then(json => {
+    getPlatform().httpRequest.get(url, {
+      Authorization: this.clientSdkKey,
+      "Content-Type": "application/json",
+      UA: getPlatform()?.UA,
+    }, {
+      user: userParam
+    }, (json: { [key: string]: FPDetail; } | undefined) => {
       if (this.status !== STATUS.ERROR) {
         this.toggles = json;
 
@@ -419,10 +401,9 @@ class FeatureProbe extends TinyEmitter {
 
         this.storage.setItem(KEY, JSON.stringify(json));
       }
+    }, (error: string) => {
+      console.error('FeatureProbe JS SDK: Error getting toggles: ', error);
     })
-    .catch((e) => {
-      console.error('FeatureProbe JS SDK: Error getting toggles: ', e);
-    });
   }
 
   private async sendEvents(key: string): Promise<void> {
@@ -447,28 +428,15 @@ class FeatureProbe extends TinyEmitter {
         },
       ];
 
-      fetch(this.eventsUrl.toString(), {
-        cache: "no-cache",
-        method: "POST",
-        headers: {
-          Authorization: this.clientSdkKey,
-          "Content-Type": "application/json",
-          UA: UA,
-        },
-        body: JSON.stringify(payload),
+      getPlatform().httpRequest.post(this.eventsUrl, {
+        Authorization: this.clientSdkKey,
+        "Content-Type": "application/json",
+        UA: getPlatform()?.UA,
+      }, JSON.stringify(payload), () => {
+        //
+      }, (error: string) => {
+        console.error('FeatureProbe JS SDK: Error reporting events: ', error);
       })
-      .then(response => {
-        if (response.status >= 200 && response.status < 300) {
-          return response;
-        }
-        else {
-          const error: Error = new Error(response.statusText);
-          throw error;
-        }
-      })
-      .catch((e) => {
-        console.error('FeatureProbe JS SDK: Error reporting events: ', e);
-      });
     }
   }
 
