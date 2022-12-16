@@ -112,8 +112,7 @@ export interface IHttpRequest {
     url: string, 
     headers: Record<string, string>, 
     data: Record<string, string>,
-    // @ts-ignore
-    successCb: (json) => void, 
+    successCb: (json: any) => void, 
     errorCb: (e: string) => void
   ) => void
   post: (
