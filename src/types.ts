@@ -118,7 +118,7 @@ export interface IHttpRequest {
   post: (
     url: string, 
     headers: Record<string, string>, 
-    data: any, 
+    data: string, 
     successCb: () => void, 
     errorCb: (e: string) => void
   ) => void

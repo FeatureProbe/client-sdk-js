@@ -1,14 +1,14 @@
 import "whatwg-fetch";
 import { IHttpRequest, IPlatForm } from "./types";
 import StorageProvider from "./localStorage";
-import pkg from '../package.json';
+import pkg from "../package.json";
 
 const PKG_VERSION = pkg.version;
 const UA = "JS/" + PKG_VERSION;
 
 const httpRequest:IHttpRequest = {
   get: function(url, headers, data, successCb, errorCb) {
-    fetch(url.toString() + '?' + new URLSearchParams(data), {
+    fetch(url.toString() + "?" + new URLSearchParams(data), {
       method: "GET",
       cache: "no-cache",
       headers: headers,
