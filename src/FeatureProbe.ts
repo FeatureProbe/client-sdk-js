@@ -2,7 +2,7 @@ import { TinyEmitter } from "tiny-emitter";
 import { Base64 } from "js-base64";
 import { FPUser } from "./FPUser";
 import { FPDetail, FPStorageProvider, FPConfig, IParams } from "./types";
-import { platform } from "./index";
+import { getPlatform } from "./platform";
 const KEY = 'repository';
 
 const EVENTS = {
@@ -74,7 +74,7 @@ class FeatureProbe extends TinyEmitter {
     this.refreshInterval = refreshInterval;
     this.timeoutInterval = timeoutInterval;
     this.status = STATUS.START;
-    this.storage = platform.localStorage;
+    this.storage = getPlatform().localStorage;
     this.readyPromise = null;
   }
 
@@ -383,33 +383,27 @@ class FeatureProbe extends TinyEmitter {
     const userParam = Base64.encode(userStr);
     const url = this.togglesUrl;
 
-    platform.httpRequest.get(
-      url, 
-      {
-        Authorization: this.clientSdkKey,
-        "Content-Type": "application/json",
-        UA: platform.UA,
-      }, 
-      {
-        user: userParam
-      }, 
-      (json: { [key: string]: FPDetail; } | undefined) => {
-        if (this.status !== STATUS.ERROR) {
-          this.toggles = json;
+    getPlatform().httpRequest.get(url, {
+      Authorization: this.clientSdkKey,
+      "Content-Type": "application/json",
+      UA: getPlatform()?.UA,
+    }, {
+      user: userParam
+    }, (json: { [key: string]: FPDetail; } | undefined) => {
+      if (this.status !== STATUS.ERROR) {
+        this.toggles = json;
 
-          if (this.status === STATUS.PENDING) {
-            this.successInitialized();
-          } else if (this.status === STATUS.READY) {
-            this.emit(EVENTS.UPDATE);
-          }
-
-          this.storage.setItem(KEY, JSON.stringify(json));
+        if (this.status === STATUS.PENDING) {
+          this.successInitialized();
+        } else if (this.status === STATUS.READY) {
+          this.emit(EVENTS.UPDATE);
         }
-      }, 
-      (error: string) => {
-        console.error('FeatureProbe JS SDK: Error getting toggles: ', error);
+
+        this.storage.setItem(KEY, JSON.stringify(json));
       }
-    )
+    }, (error: string) => {
+      console.error('FeatureProbe JS SDK: Error getting toggles: ', error);
+    })
   }
 
   private async sendEvents(key: string): Promise<void> {
@@ -434,19 +428,15 @@ class FeatureProbe extends TinyEmitter {
         },
       ];
 
-      platform.httpRequest.post(
-        this.eventsUrl, 
-        {
-          Authorization: this.clientSdkKey,
-          "Content-Type": "application/json",
-          UA: platform.UA,
-        }, 
-        JSON.stringify(payload), 
-        () => {}, 
-        (error: string) => {
-          console.error('FeatureProbe JS SDK: Error reporting events: ', error);
-        }
-      )
+      getPlatform().httpRequest.post(this.eventsUrl, {
+        Authorization: this.clientSdkKey,
+        "Content-Type": "application/json",
+        UA: getPlatform()?.UA,
+      }, JSON.stringify(payload), () => {
+        //
+      }, (error: string) => {
+        console.error('FeatureProbe JS SDK: Error reporting events: ', error);
+      })
     }
   }
 

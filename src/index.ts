@@ -1,9 +1,7 @@
 import { FPUser } from './FPUser';
-import { FeatureProbe, FPDetail } from './FeatureProbe';
-import { FPConfig, FPStorageProvider, IPlatForm, IOption } from './types';
-import Platform from './platform';
-
-let platform: IPlatForm = Platform;
+import { FeatureProbe } from './FeatureProbe';
+import { FPConfig, FPStorageProvider, IOption, FPDetail } from './types';
+import { setPlatform } from './platform';
 
 /**
  * Initialize SDK with platform
@@ -13,8 +11,8 @@ let platform: IPlatForm = Platform;
  */
 function initializePlatform(options: IOption) {
   if (options.platform) {
-    platform = options.platform;
+    setPlatform(options.platform);
   }
 }
 
-export { FPUser, FeatureProbe, FPDetail, FPConfig, FPStorageProvider, initializePlatform, platform };
+export { FPUser, FeatureProbe, FPDetail, FPConfig, FPStorageProvider, initializePlatform };

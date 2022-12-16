@@ -107,10 +107,27 @@ export interface FPStorageProvider {
   getItem: (key: string) => Promise<any>;
 }
 
+export interface IHttpRequest {
+  get: (
+    url: string, 
+    headers: Record<string, string>, 
+    data: Record<string, string>, 
+    successCb: (json: any) => void, 
+    errorCb: (e: string) => void
+  ) => void
+  post: (
+    url: string, 
+    headers: Record<string, string>, 
+    data: any, 
+    successCb: () => void, 
+    errorCb: (e: string) => void
+  ) => void
+}
+
 export interface IPlatForm {
   localStorage: FPStorageProvider;
   UA: string;
-  httpRequest: any;
+  httpRequest: IHttpRequest;
 }
 
 export interface IOption {
