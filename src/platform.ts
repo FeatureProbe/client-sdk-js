@@ -62,11 +62,11 @@ const Platform = {
   }
 }
 
-function setPlatform(platform: IPlatForm) {
+function setPlatform(platform: IPlatForm): void {
   Platform.default = platform;
 }
 
-function getPlatform() {
+function getPlatform(): IPlatForm {
   return Platform.default;
 }
 

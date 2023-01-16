@@ -90,7 +90,7 @@ class FeatureProbe extends TinyEmitter {
   /**
    * Start the FeatureProbe client.
    */
-  public async start() {
+  public async start(): Promise<void> {
     this.connectSocket();
     if (this.status !== STATUS.START) {
       return;
@@ -121,7 +121,7 @@ class FeatureProbe extends TinyEmitter {
    * Stop the FeatureProbe client, once the client has been stopped, 
    * SDK will no longer listen for toggle changes or send metrics to Server.
    */
-  public stop() {
+  public stop(): void {
     clearInterval(this.timer);
     clearTimeout(this.timeoutTimer);
     this.timeoutTimer = null;
@@ -292,7 +292,7 @@ class FeatureProbe extends TinyEmitter {
    * @param user
    *   A new FPUser instance.
    */
-  public identifyUser(user: FPUser) {
+  public identifyUser(user: FPUser): void {
     this.user = user;
     this.toggles = undefined;
     this.fetchToggles();
@@ -301,7 +301,7 @@ class FeatureProbe extends TinyEmitter {
   /**
    * Logout the current user, change the current user to an anonymous user.
    */
-  public logout() {
+  public logout(): void {
     const user = new FPUser();
     this.identifyUser(user);
   }
