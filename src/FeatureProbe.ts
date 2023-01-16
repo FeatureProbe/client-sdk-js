@@ -11,7 +11,7 @@ const EVENTS = {
   READY: "ready",
   ERROR: "error",
   UPDATE: "update",
-  CACHE_READY: "cache_ready"
+  CACHE_READY: "cache_ready",
 };
 
 const STATUS = {
@@ -330,9 +330,9 @@ class FeatureProbe extends TinyEmitter {
   }
 
   private connectSocket() {
-    const socket = io(this.realtimeUrl, { 
+    const socket = io(this.realtimeUrl, {
       path: this.realtimePath,
-      transports: ["websocket"]
+      transports: ["websocket"],
     });
 
     socket.on("connect", () => {
@@ -342,7 +342,7 @@ class FeatureProbe extends TinyEmitter {
     socket.on("update", () => {
       (async () => {
         await this.fetchToggles();
-      })()
+      })();
     });
 
     this.socket = socket;
