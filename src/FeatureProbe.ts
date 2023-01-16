@@ -2,15 +2,16 @@ import { TinyEmitter } from "tiny-emitter";
 import { Base64 } from "js-base64";
 import { FPUser } from "./FPUser";
 import { FPDetail, FPStorageProvider, FPConfig, IParams } from "./types";
-import { io, Socket } from 'socket.io-client';
+import { io, Socket } from "socket.io-client";
+import { DefaultEventsMap } from "@socket.io/component-emitter";
 import { getPlatform } from "./platform";
-const KEY = 'repository';
+const KEY = "repository";
 
 const EVENTS = {
   READY: "ready",
   ERROR: "error",
   UPDATE: "update",
-  CACHE_READY: 'cache_ready'
+  CACHE_READY: "cache_ready"
 };
 
 const STATUS = {
@@ -39,7 +40,7 @@ class FeatureProbe extends TinyEmitter {
   private status: string;
   private timeoutInterval: number;
   private storage: FPStorageProvider;
-  private socket?: Socket<any, any>;
+  private socket?: Socket<DefaultEventsMap, DefaultEventsMap>;
 
   constructor({
     remoteUrl,
@@ -329,15 +330,18 @@ class FeatureProbe extends TinyEmitter {
   }
 
   private connectSocket() {
-    const socket = io(this.realtimeUrl, { path: this.realtimePath, transports: ["websocket"] });
-
-    socket.on('connect', () => {
-      socket.emit('register', { sdk_key: this.clientSdkKey });
+    const socket = io(this.realtimeUrl, { 
+      path: this.realtimePath,
+      transports: ["websocket"]
     });
 
-    socket.on('update', () => {
+    socket.on("connect", () => {
+      socket.emit("register", { sdk_key: this.clientSdkKey });
+    });
+
+    socket.on("update", () => {
       (async () => {
-        await this.fetchToggles()
+        await this.fetchToggles();
       })()
     });
 
@@ -427,7 +431,7 @@ class FeatureProbe extends TinyEmitter {
         this.storage.setItem(KEY, JSON.stringify(json));
       }
     }, (error: string) => {
-      console.error('FeatureProbe JS SDK: Error getting toggles: ', error);
+      console.error("FeatureProbe JS SDK: Error getting toggles: ", error);
     })
   }
 
@@ -460,7 +464,7 @@ class FeatureProbe extends TinyEmitter {
       }, JSON.stringify(payload), () => {
         //
       }, (error: string) => {
-        console.error('FeatureProbe JS SDK: Error reporting events: ', error);
+        console.error("FeatureProbe JS SDK: Error reporting events: ", error);
       })
     }
   }

@@ -1,7 +1,7 @@
 import typescript from "rollup-plugin-typescript2";
 import minify from "rollup-plugin-babel-minify";
-import resolve from '@rollup/plugin-node-resolve';
-import commonjs from '@rollup/plugin-commonjs';
+import resolve from "@rollup/plugin-node-resolve";
+import commonjs from "@rollup/plugin-commonjs";
 import json from "@rollup/plugin-json";
 import nodePolyfills from "rollup-plugin-node-polyfills";
 
@@ -16,7 +16,7 @@ export default {
   ],
   plugins: [
     resolve({
-      browser: true
+      browser: true,
     }),
     commonjs({
       include: "node_modules/**",
