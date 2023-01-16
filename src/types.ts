@@ -2,7 +2,7 @@ import { FPUser } from "./FPUser";
 
 interface IValue {
   count: number;
-  value: boolean | string | number | object;
+  value: boolean | string | number | Record<string, unknown>;
   index: number | null;
   version: number | null;
 }
@@ -25,7 +25,7 @@ export interface FPDetail {
   /**
    * The value corresponding to the rule in the UI platform.
    */
-  value: boolean | string | number | object;
+  value: boolean | string | number | Record<string, unknown>;
 
   /**
    * The sequence number of the rule in the UI configuration that hit the rule.
@@ -122,7 +122,7 @@ export interface IHttpRequest {
     url: string, 
     headers: Record<string, string>, 
     data: Record<string, string>,
-    successCb: (json: any) => void, 
+    successCb: (json: unknown) => void, 
     errorCb: (e: string) => void
   ) => void
   post: (

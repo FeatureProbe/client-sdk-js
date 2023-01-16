@@ -213,8 +213,8 @@ class FeatureProbe extends TinyEmitter {
    * @param defaultValue
    *   The default value of the toggle, to be used if the value is not available from FeatureProbe.
    */
-  public jsonValue(key: string, defaultValue: object): object {
-    return this.toggleValue(key, defaultValue, "object") as object;
+  public jsonValue(key: string, defaultValue: Record<string, unknown>): Record<string, unknown> {
+    return this.toggleValue(key, defaultValue, "object") as Record<string, unknown>;
   }
 
   /**
@@ -265,7 +265,7 @@ class FeatureProbe extends TinyEmitter {
    * @param defaultValue
    *   The default value of the toggle, to be used if the value is not available from FeatureProbe.
    */
-  public jsonDetail(key: string, defaultValue: object): FPDetail {
+  public jsonDetail(key: string, defaultValue: Record<string, unknown>): FPDetail {
     return this.toggleDetail(key, defaultValue, "object");
   }
 
@@ -307,15 +307,15 @@ class FeatureProbe extends TinyEmitter {
   }
 
   static newForTest(toggles: { [key: string]: any }): FeatureProbe {
-    var fp = new FeatureProbe({
+    const fp = new FeatureProbe({
       remoteUrl: "http://127.0.0.1:4000",
       clientSdkKey: "_",
       user: new FPUser(),
       timeoutInterval: 1000,
     });
-    var _toggles: { [key: string]: FPDetail } = {};
-    for (let key in toggles) {
-      let value = toggles[key];
+    const _toggles: { [key: string]: FPDetail } = {};
+    for (const key in toggles) {
+      const value = toggles[key];
       _toggles[key] = {
         value: value,
         ruleIndex: null,
@@ -355,12 +355,12 @@ class FeatureProbe extends TinyEmitter {
       return defaultValue;
     }
 
-    let detail = this.toggles[key];
+    const detail = this.toggles[key];
     if (detail === undefined) {
       return defaultValue;
     }
 
-    let v = detail.value;
+    const v = detail.value;
     if (typeof v == valueType) {
       return v;
     } else {
@@ -385,7 +385,7 @@ class FeatureProbe extends TinyEmitter {
       };
     }
 
-    let detail = this.toggles[key];
+    const detail = this.toggles[key];
     if (detail === undefined) {
       return {
         value: defaultValue,
