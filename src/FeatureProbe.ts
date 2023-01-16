@@ -332,7 +332,6 @@ class FeatureProbe extends TinyEmitter {
     const socket = io(this.realtimeUrl, { path: this.realtimePath, transports: ["websocket"] });
 
     socket.on('connect', () => {
-      console.log('connect');
       socket.emit('register', { sdk_key: this.clientSdkKey });
     });
 
@@ -340,10 +339,6 @@ class FeatureProbe extends TinyEmitter {
       (async () => {
         await this.fetchToggles()
       })()
-    });
-
-    socket.on('connect_error', () => {
-      console.log('connect_error');
     });
 
     this.socket = socket;
