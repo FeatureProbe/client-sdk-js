@@ -418,9 +418,9 @@ class FeatureProbe extends TinyEmitter {
       UA: getPlatform()?.UA,
     }, {
       user: userParam
-    }, (json: { [key: string]: FPDetail; } | undefined) => {
+    }, (json: unknown) => {
       if (this.status !== STATUS.ERROR) {
-        this.toggles = json;
+        this.toggles = json as { [key: string]: FPDetail; } | undefined;
 
         if (this.status === STATUS.PENDING) {
           this.successInitialized();
