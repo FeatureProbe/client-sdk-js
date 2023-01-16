@@ -1,6 +1,6 @@
-test/
-tools/
-config/
-docs/
+test/*
+tools/*
+config/*
+docs/*
 jest.config.js
 segupJest.js
