@@ -9,7 +9,7 @@ import { setPlatform } from './platform';
  *  @param options
  *   The platform object
  */
-function initializePlatform(options: IOption) {
+function initializePlatform(options: IOption): void {
   if (options.platform) {
     setPlatform(options.platform);
   }

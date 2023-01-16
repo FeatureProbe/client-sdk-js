@@ -2,7 +2,7 @@ import { FPUser } from "./FPUser";
 
 interface IValue {
   count: number;
-  value: boolean | string | number | object;
+  value: boolean | string | number | Record<string, unknown>;
   index: number | null;
   version: number | null;
 }
@@ -25,7 +25,7 @@ export interface FPDetail {
   /**
    * The value corresponding to the rule in the UI platform.
    */
-  value: boolean | string | number | object;
+  value: boolean | string | number | Record<string, unknown>;
 
   /**
    * The sequence number of the rule in the UI configuration that hit the rule.
@@ -55,14 +55,24 @@ export interface FPConfig {
   remoteUrl?: string;
 
   /**
-   * The specific URL to get toggles, once set, remoteUrl will be ignored.
+   * The specific URL to get toggles, if not set, will generate from remoteUrl.
    */
   togglesUrl?: string;
 
   /**
-   * The specific URL to post events, once set, remoteUrl will be ignored.
+   * The specific URL to post events, if not set, will generate from remoteUrl.
    */
   eventsUrl?: string;
+
+  /**
+   * The specific URL to receive realtime events, if not set, will generate from remoteUrl.
+   */
+  realtimeUrl?: string;
+
+  /**
+   * The specific path to receive realtime events, if not set, default value will be used.
+   */
+   realtimePath?: string;
 
   /**
    * The Client SDK Key is used to authentification.
@@ -112,7 +122,7 @@ export interface IHttpRequest {
     url: string, 
     headers: Record<string, string>, 
     data: Record<string, string>,
-    successCb: (json: any) => void, 
+    successCb: (json: unknown) => void, 
     errorCb: (e: string) => void
   ) => void
   post: (

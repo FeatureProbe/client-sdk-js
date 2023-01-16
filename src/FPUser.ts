@@ -51,7 +51,7 @@ export class FPUser {
    * 
    */
   public extendAttrs(attrs: { [key: string]: string }): FPUser {
-    for (let key in attrs) {
+    for (const key in attrs) {
       this.attrs[key] = attrs[key];
     }
     return this;
