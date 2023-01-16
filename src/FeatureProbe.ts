@@ -326,7 +326,7 @@ class FeatureProbe extends TinyEmitter {
 
   private connectSocket() {
     const url = new URL(this.realtimeUrl);
-    const socket = io(this.realtimeUrl, { path: url.pathname });
+    const socket = io(this.realtimeUrl.toString(), { path: url.pathname, transports: ["websocket"] });
 
     socket.on('connect', () => {
       socket.emit('register', { sdk_key: this.clientSdkKey });
