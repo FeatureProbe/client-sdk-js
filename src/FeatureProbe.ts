@@ -1,14 +1,9 @@
-import "whatwg-fetch";
 import { TinyEmitter } from "tiny-emitter";
 import { Base64 } from "js-base64";
-import StorageProvider from "./localStorage";
 import { FPUser } from "./FPUser";
 import { FPDetail, FPStorageProvider, FPConfig, IParams } from "./types";
 import { io, Socket } from 'socket.io-client';
-import pkg from '../package.json';
-
-const PKG_VERSION = pkg.version;
-const UA = "JS/" + PKG_VERSION;
+import { getPlatform } from "./platform";
 const KEY = 'repository';
 
 const EVENTS = {
@@ -19,6 +14,7 @@ const EVENTS = {
 };
 
 const STATUS = {
+  START: "start",
   PENDING: "pending",
   READY: "ready",
   ERROR: "error",
@@ -29,9 +25,10 @@ const STATUS = {
  * which provides access to all of the SDK's functionality.
  */
 class FeatureProbe extends TinyEmitter {
-  private togglesUrl: URL;
-  private eventsUrl: URL;
-  private realtimeUrl: URL;
+  private togglesUrl: string;
+  private eventsUrl: string;
+  private realtimeUrl: string;
+  private realtimePath: string;
   private refreshInterval: number;
   private clientSdkKey: string;
   private user: FPUser;
@@ -49,6 +46,7 @@ class FeatureProbe extends TinyEmitter {
     togglesUrl,
     eventsUrl,
     realtimeUrl,
+    realtimePath,
     clientSdkKey,
     user,
     refreshInterval = 1000,
@@ -75,15 +73,16 @@ class FeatureProbe extends TinyEmitter {
     }
 
     this.toggles = undefined;
-    this.togglesUrl = new URL(togglesUrl || remoteUrl + "/api/client-sdk/toggles");
-    this.eventsUrl = new URL(eventsUrl || remoteUrl + "/api/events");
-    this.realtimeUrl = new URL(realtimeUrl || remoteUrl + "/realtime");
+    this.togglesUrl = togglesUrl ?? remoteUrl + "/api/client-sdk/toggles";
+    this.eventsUrl = eventsUrl ?? remoteUrl + "/api/events";
+    this.realtimeUrl = realtimeUrl ?? remoteUrl + "/realtime";
+    this.realtimePath = realtimePath ?? "/server/realtime";
     this.user = user;
     this.clientSdkKey = clientSdkKey;
     this.refreshInterval = refreshInterval;
     this.timeoutInterval = timeoutInterval;
-    this.status = STATUS.PENDING;
-    this.storage = new StorageProvider();
+    this.status = STATUS.START;
+    this.storage = getPlatform().localStorage;
     this.readyPromise = null;
   }
 
@@ -92,6 +91,11 @@ class FeatureProbe extends TinyEmitter {
    */
   public async start() {
     this.connectSocket();
+    if (this.status !== STATUS.START) {
+      return;
+    }
+    this.status = STATUS.PENDING;
+
     this.timeoutTimer = setTimeout(() => {
       if (this.status === STATUS.PENDING) {
         this.errorInitialized();
@@ -325,10 +329,10 @@ class FeatureProbe extends TinyEmitter {
   }
 
   private connectSocket() {
-    const url = new URL(this.realtimeUrl);
-    const socket = io(this.realtimeUrl.toString(), { path: url.pathname, transports: ["websocket"] });
+    const socket = io(this.realtimeUrl, { path: this.realtimePath, transports: ["websocket"] });
 
     socket.on('connect', () => {
+      console.log('connect');
       socket.emit('register', { sdk_key: this.clientSdkKey });
     });
 
@@ -336,6 +340,10 @@ class FeatureProbe extends TinyEmitter {
       (async () => {
         await this.fetchToggles()
       })()
+    });
+
+    socket.on('connect_error', () => {
+      console.log('connect_error');
     });
 
     this.socket = socket;
@@ -404,42 +412,28 @@ class FeatureProbe extends TinyEmitter {
     const userStr = JSON.stringify(this.user);
     const userParam = Base64.encode(userStr);
     const url = this.togglesUrl;
-    url.searchParams.set("user", userParam);
 
-    return fetch(url.toString(), {
-      method: "GET",
-      cache: "no-cache",
-      headers: {
-        Authorization: this.clientSdkKey,
-        "Content-Type": "application/json",
-        UA: UA,
-      },
+    getPlatform().httpRequest.get(url, {
+      Authorization: this.clientSdkKey,
+      "Content-Type": "application/json",
+      UA: getPlatform()?.UA,
+    }, {
+      user: userParam
+    }, (json: { [key: string]: FPDetail; } | undefined) => {
+      if (this.status !== STATUS.ERROR) {
+        this.toggles = json;
+
+        if (this.status === STATUS.PENDING) {
+          this.successInitialized();
+        } else if (this.status === STATUS.READY) {
+          this.emit(EVENTS.UPDATE);
+        }
+
+        this.storage.setItem(KEY, JSON.stringify(json));
+      }
+    }, (error: string) => {
+      console.error('FeatureProbe JS SDK: Error getting toggles: ', error);
     })
-      .then(response => {
-        if (response.status >= 200 && response.status < 300) {
-          return response;
-        } else {
-          const error: Error = new Error(response.statusText);
-          throw error;
-        }
-      })
-      .then(response => response.json())
-      .then(json => {
-        if (this.status !== STATUS.ERROR) {
-          this.toggles = json;
-
-          if (this.status === STATUS.PENDING) {
-            this.successInitialized();
-          } else if (this.status === STATUS.READY) {
-            this.emit(EVENTS.UPDATE);
-          }
-
-          this.storage.setItem(KEY, JSON.stringify(json));
-        }
-      })
-      .catch((e) => {
-        console.error('FeatureProbe JS SDK: Error getting toggles: ', e);
-      });
   }
 
   private async sendEvents(key: string): Promise<void> {
@@ -464,28 +458,15 @@ class FeatureProbe extends TinyEmitter {
         },
       ];
 
-      fetch(this.eventsUrl.toString(), {
-        cache: "no-cache",
-        method: "POST",
-        headers: {
-          Authorization: this.clientSdkKey,
-          "Content-Type": "application/json",
-          UA: UA,
-        },
-        body: JSON.stringify(payload),
+      getPlatform().httpRequest.post(this.eventsUrl, {
+        Authorization: this.clientSdkKey,
+        "Content-Type": "application/json",
+        UA: getPlatform()?.UA,
+      }, JSON.stringify(payload), () => {
+        //
+      }, (error: string) => {
+        console.error('FeatureProbe JS SDK: Error reporting events: ', error);
       })
-        .then(response => {
-          if (response.status >= 200 && response.status < 300) {
-            return response;
-          }
-          else {
-            const error: Error = new Error(response.statusText);
-            throw error;
-          }
-        })
-        .catch((e) => {
-          console.error('FeatureProbe JS SDK: Error reporting events: ', e);
-        });
     }
   }
 

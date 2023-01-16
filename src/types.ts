@@ -55,19 +55,24 @@ export interface FPConfig {
   remoteUrl?: string;
 
   /**
-   * The specific URL to get toggles, if not set, will generate from remoteUrl will be ignored.
+   * The specific URL to get toggles, if not set, will generate from remoteUrl.
    */
   togglesUrl?: string;
 
   /**
-   * The specific URL to post events, if not set, will generate from remoteUrl will be ignored.
+   * The specific URL to post events, if not set, will generate from remoteUrl.
    */
   eventsUrl?: string;
 
   /**
-   * The specific URL to receive realtime events, if not set, will generate from remoteUrl will be ignored.
+   * The specific URL to receive realtime events, if not set, will generate from remoteUrl.
    */
   realtimeUrl?: string;
+
+  /**
+   * The specific path to receive realtime events, if not set, default value will be used.
+   */
+   realtimePath?: string;
 
   /**
    * The Client SDK Key is used to authentification.
@@ -110,4 +115,31 @@ export interface FPStorageProvider {
    *   The key of the storage item.
    */
   getItem: (key: string) => Promise<any>;
+}
+
+export interface IHttpRequest {
+  get: (
+    url: string, 
+    headers: Record<string, string>, 
+    data: Record<string, string>,
+    successCb: (json: any) => void, 
+    errorCb: (e: string) => void
+  ) => void
+  post: (
+    url: string, 
+    headers: Record<string, string>, 
+    data: string, 
+    successCb: () => void, 
+    errorCb: (e: string) => void
+  ) => void
+}
+
+export interface IPlatForm {
+  localStorage: FPStorageProvider;
+  UA: string;
+  httpRequest: IHttpRequest;
+}
+
+export interface IOption {
+  platform: IPlatForm
 }

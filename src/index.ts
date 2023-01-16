@@ -1,5 +1,18 @@
 import { FPUser } from './FPUser';
-import { FeatureProbe, FPDetail } from './FeatureProbe';
-import { FPConfig, FPStorageProvider } from './types';
+import { FeatureProbe } from './FeatureProbe';
+import { FPConfig, FPStorageProvider, IOption, FPDetail, IHttpRequest } from './types';
+import { setPlatform } from './platform';
 
-export { FPUser, FeatureProbe, FPDetail, FPConfig, FPStorageProvider };
+/**
+ * Initialize SDK with platform
+ * 
+ *  @param options
+ *   The platform object
+ */
+function initializePlatform(options: IOption) {
+  if (options.platform) {
+    setPlatform(options.platform);
+  }
+}
+
+export { FPUser, FeatureProbe, FPDetail, FPConfig, FPStorageProvider, IHttpRequest, initializePlatform };
