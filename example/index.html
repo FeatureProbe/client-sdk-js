@@ -57,6 +57,14 @@
         document.getElementById("boolean-result").innerText = boolValue;
         const boolDetail = fpClient.boolDetail("campaign_allow_list", false);
         document.getElementById("boolean-detail").innerText = JSON.stringify(boolDetail);
+
+        setTimeout(() => {
+          const boolValue = fpClient.boolValue("campaign_allow_list", false);
+        }, 1000);
+
+        setTimeout(() => {
+          const boolValue = fpClient.boolValue("campaign_allow_list", false);
+        }, 10000);
       });
 
       fpClient.on("update", function() {

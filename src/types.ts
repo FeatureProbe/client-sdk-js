@@ -1,25 +1,28 @@
 import { FPUser } from "./FPUser";
 
-interface IValue {
-  count: number;
+export interface IAccessEvent {
+  time: number;
+  key: string;
   value: boolean | string | number | Record<string, unknown>;
-  index: number | null;
-  version: number | null;
+  index: number;
+  version: number;
+  reason: string | null;
 }
 
-interface ICounter {
-  [key: string]: IValue[];
+export interface IToggleCounter {
+  value: boolean | string | number | Record<string, unknown>;
+  version: number;
+  index: number;
+  count: number;
 }
 
-interface IAccess {
+export interface IAccess {
   startTime: number;
   endTime: number;
-  counters: ICounter;
+  counters: { [key: string]: IToggleCounter[] };
 }
 
-export interface IParams {
-  access: IAccess;
-}
+export type IRetureValue = string | number | boolean | Record<string, unknown>;
 
 export interface FPDetail {
   /**
@@ -106,7 +109,7 @@ export interface FPStorageProvider {
    *   The data of the storage item.
    */
 
-  setItem: (key: string, data: any) => Promise<void>;
+  setItem: (key: string, data: string) => Promise<void>;
 
   /**
    * Get data from storage.
@@ -114,7 +117,7 @@ export interface FPStorageProvider {
    *  @param key
    *   The key of the storage item.
    */
-  getItem: (key: string) => Promise<any>;
+  getItem: (key: string) => Promise<string>;
 }
 
 export interface IHttpRequest {
