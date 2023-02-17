@@ -1,10 +1,12 @@
 import { TinyEmitter } from "tiny-emitter";
 import { Base64 } from "js-base64";
 import { FPUser } from "./FPUser";
-import { FPDetail, FPStorageProvider, FPConfig, IParams } from "./types";
+import { FPDetail, FPStorageProvider, FPConfig, IReturnValue } from "./types";
 import { io, Socket } from "socket.io-client";
 import { DefaultEventsMap } from "@socket.io/component-emitter";
 import { getPlatform } from "./platform";
+import { EventRecorder } from "./EventRecorder";
+import reportEvents from "./autoReportEvents";
 const KEY = "repository";
 
 const EVENTS = {
@@ -28,19 +30,21 @@ const STATUS = {
 class FeatureProbe extends TinyEmitter {
   private togglesUrl: string;
   private eventsUrl: string;
+  private getEventsUrl: string;
   private realtimeUrl: string;
   private realtimePath: string;
   private refreshInterval: number;
   private clientSdkKey: string;
   private user: FPUser;
   private toggles: { [key: string]: FPDetail } | undefined;
-  private timer?: any;
-  private timeoutTimer?: any;
+  private timer?: NodeJS.Timer;
+  private timeoutTimer?: NodeJS.Timer;
   private readyPromise: null | Promise<void>;
   private status: string;
   private timeoutInterval: number;
   private storage: FPStorageProvider;
   private socket?: Socket<DefaultEventsMap, DefaultEventsMap>;
+  private eventRecorder?: EventRecorder;
 
   constructor({
     remoteUrl,
@@ -51,7 +55,8 @@ class FeatureProbe extends TinyEmitter {
     clientSdkKey,
     user,
     refreshInterval = 1000,
-    timeoutInterval = 10000
+    timeoutInterval = 10000,
+    enableAutoReporting = true,
   }: FPConfig) {
     super();
     if (!clientSdkKey) {
@@ -76,6 +81,7 @@ class FeatureProbe extends TinyEmitter {
     this.toggles = undefined;
     this.togglesUrl = togglesUrl ?? remoteUrl + "/api/client-sdk/toggles";
     this.eventsUrl = eventsUrl ?? remoteUrl + "/api/events";
+    this.getEventsUrl = eventsUrl ?? remoteUrl + "/api/client-sdk/events";
     this.realtimeUrl = realtimeUrl ?? remoteUrl + "/realtime";
     this.realtimePath = realtimePath ?? "/server/realtime";
     this.user = user;
@@ -85,6 +91,11 @@ class FeatureProbe extends TinyEmitter {
     this.status = STATUS.START;
     this.storage = getPlatform().localStorage;
     this.readyPromise = null;
+    this.eventRecorder = new EventRecorder(this.clientSdkKey, this.eventsUrl, this.refreshInterval);
+
+    if (enableAutoReporting) {
+      reportEvents(this.clientSdkKey, user, this.getEventsUrl, this.eventRecorder);
+    }
   }
 
   /**
@@ -92,9 +103,11 @@ class FeatureProbe extends TinyEmitter {
    */
   public async start(): Promise<void> {
     this.connectSocket();
+
     if (this.status !== STATUS.START) {
       return;
     }
+
     this.status = STATUS.PENDING;
 
     this.timeoutTimer = setTimeout(() => {
@@ -104,7 +117,7 @@ class FeatureProbe extends TinyEmitter {
     }, this.timeoutInterval);
 
     try {
-      // Emit `cache_ready` event if toggles exist in LocalStorage
+      // Emit `cache_ready` event if toggles exist in localStorage
       const toggles = await this.storage.getItem(KEY);
       if (toggles) {
         this.toggles = JSON.parse(toggles);
@@ -124,8 +137,8 @@ class FeatureProbe extends TinyEmitter {
   public stop(): void {
     clearInterval(this.timer);
     clearTimeout(this.timeoutTimer);
-    this.timeoutTimer = null;
-    this.timer = null;
+    this.timeoutTimer = undefined;
+    this.timer = undefined;
   }
 
   /**
@@ -306,7 +319,27 @@ class FeatureProbe extends TinyEmitter {
     this.identifyUser(user);
   }
 
-  static newForTest(toggles: { [key: string]: any }): FeatureProbe {
+  /**
+   * Manually push events.
+   */
+  public flush(): void {
+    this.eventRecorder?.flush();
+  }
+
+  /**
+   * Record custom events, value is optional.
+   */
+  public track(name: string, user: string, value?: unknown): void {
+    this.eventRecorder?.recordTrackEvent({
+      kind: "custom",
+      name,
+      time: Date.now(),
+      user,
+      value,
+    });
+  }
+
+  static newForTest(toggles: { [key: string]: boolean }): FeatureProbe {
     const fp = new FeatureProbe({
       remoteUrl: "http://127.0.0.1:4000",
       clientSdkKey: "_",
@@ -348,9 +381,7 @@ class FeatureProbe extends TinyEmitter {
     this.socket = socket;
   }
 
-  private toggleValue(key: string, defaultValue: any, valueType: string): any {
-    this.sendEvents(key);
-
+  private toggleValue(key: string, defaultValue: IReturnValue, valueType: string): IReturnValue {
     if (this.toggles == undefined) {
       return defaultValue;
     }
@@ -362,6 +393,30 @@ class FeatureProbe extends TinyEmitter {
 
     const v = detail.value;
     if (typeof v == valueType) {
+      const timestamp = Date.now();
+
+      this.eventRecorder?.recordAccessEvent({
+        time: timestamp,
+        key: key,
+        value: detail.value,
+        index: detail.variationIndex ?? -1,
+        version: detail.version ?? 0,
+        reason: detail.reason
+      });
+
+      if (detail.trackAccessEvents) {
+        this.eventRecorder?.recordTrackEvent({
+          kind: "access",
+          time: timestamp,
+          user: this.getUser().getKey(),
+          key: key,
+          value: detail.value,
+          variationIndex: detail.variationIndex ?? -1,
+          ruleIndex: detail.ruleIndex ?? null,
+          version: detail.version ?? 0,
+        });
+      }
+
       return v;
     } else {
       return defaultValue;
@@ -370,11 +425,9 @@ class FeatureProbe extends TinyEmitter {
 
   private toggleDetail(
     key: string,
-    defaultValue: any,
+    defaultValue: IReturnValue,
     valueType: string
   ): FPDetail {
-    this.sendEvents(key);
-
     if (this.toggles == undefined) {
       return {
         value: defaultValue,
@@ -395,6 +448,30 @@ class FeatureProbe extends TinyEmitter {
         reason: "Toggle: [" + key + "] not found",
       };
     } else if (typeof detail.value === valueType) {
+      const timestamp = Date.now();
+
+      this.eventRecorder?.recordAccessEvent({
+        time: timestamp,
+        key: key,
+        value: detail.value,
+        index: detail.variationIndex ?? -1,
+        version: detail.version ?? 0,
+        reason: detail.reason
+      });
+
+      if (detail.trackAccessEvents) {
+        this.eventRecorder?.recordTrackEvent({
+          kind: "access",
+          time: timestamp,
+          user: this.getUser().getKey(),
+          key: key,
+          value: detail.value,
+          variationIndex: detail.variationIndex ?? -1,
+          ruleIndex: detail.ruleIndex ?? null,
+          version: detail.version ?? 0,
+        });
+      }
+      
       return detail;
     } else {
       return {
@@ -435,40 +512,6 @@ class FeatureProbe extends TinyEmitter {
     })
   }
 
-  private async sendEvents(key: string): Promise<void> {
-    if (this.toggles && this.toggles[key]) {
-      const timestamp = Date.now();
-      const payload: IParams[] = [
-        {
-          access: {
-            startTime: timestamp,
-            endTime: timestamp,
-            counters: {
-              [key]: [
-                {
-                  count: 1,
-                  value: this.toggles[key].value,
-                  index: this.toggles[key].variationIndex,
-                  version: this.toggles[key].version,
-                },
-              ],
-            },
-          },
-        },
-      ];
-
-      getPlatform().httpRequest.post(this.eventsUrl, {
-        Authorization: this.clientSdkKey,
-        "Content-Type": "application/json",
-        UA: getPlatform()?.UA,
-      }, JSON.stringify(payload), () => {
-        //
-      }, (error: string) => {
-        console.error("FeatureProbe JS SDK: Error reporting events: ", error);
-      })
-    }
-  }
-
   // Emit `ready` event if toggles are successfully returned from server
   private successInitialized() {
     this.status = STATUS.READY;
@@ -478,7 +521,7 @@ class FeatureProbe extends TinyEmitter {
 
     if (this.timeoutTimer) {
       clearTimeout(this.timeoutTimer);
-      this.timeoutTimer = null;
+      this.timeoutTimer = undefined;
     }
   }
 
@@ -491,7 +534,7 @@ class FeatureProbe extends TinyEmitter {
 
     if (this.timer) {
       clearInterval(this.timer);
-      this.timer = null;
+      this.timer = undefined;
     }
   }
 }

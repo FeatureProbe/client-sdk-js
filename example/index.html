@@ -14,8 +14,8 @@
         color: #556ee6;
       }
     </style>
-    <!-- <script type="text/javascript" src="https://unpkg.com/featureprobe-client-sdk-js@latest/dist/featureprobe-client-sdk-js.min.js"></script> -->
-    <script type="text/javascript" src="../dist/featureprobe-client-sdk-js.min.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/featureprobe-client-sdk-js@latest/dist/featureprobe-client-sdk-js.min.js"></script>
+    <!-- <script type="text/javascript" src="../dist/featureprobe-client-sdk-js.min.js"></script> -->
   </head>
 
   <body>
@@ -57,6 +57,14 @@
         document.getElementById("boolean-result").innerText = boolValue;
         const boolDetail = fpClient.boolDetail("campaign_allow_list", false);
         document.getElementById("boolean-detail").innerText = JSON.stringify(boolDetail);
+
+        setTimeout(() => {
+          const boolValue = fpClient.boolValue("campaign_allow_list", false);
+        }, 1000);
+
+        setTimeout(() => {
+          const boolValue = fpClient.boolValue("campaign_allow_list", false);
+        }, 10000);
       });
 
       fpClient.on("update", function() {

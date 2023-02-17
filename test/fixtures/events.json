@@ -1,0 +1,15 @@
+{
+  "5d3ff41f68f14c6c5fccf06487444218": {
+    "matcher": "SIMPLE",
+    "name": "5d3ff41f68f14c6c5fccf06487444218",
+    "type": "PAGE_VIEW",
+    "url": "http://localhost"
+  },
+  "723fe44736793b2d64ad028e7103e0e5": {
+    "matcher": "EXACT",
+    "name": "723fe44736793b2d64ad028e7103e0e5",
+    "type": "CLICK",
+    "url": "http://localhost",
+    "selector": "body"
+  }
+}
