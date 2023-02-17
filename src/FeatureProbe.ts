@@ -102,7 +102,7 @@ class FeatureProbe extends TinyEmitter {
    * Start the FeatureProbe client.
    */
   public async start(): Promise<void> {
-    // this.connectSocket();
+    this.connectSocket();
 
     if (this.status !== STATUS.START) {
       return;

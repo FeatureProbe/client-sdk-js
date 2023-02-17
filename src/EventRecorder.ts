@@ -27,7 +27,7 @@ export class EventRecorder {
   constructor(
     clientSdkKey: string,
     eventsUrl: string,
-    flushInterval: number
+    flushInterval: number,
   ) {
     this.clientSdkKey = clientSdkKey;
     this.eventsUrl = eventsUrl;
@@ -109,14 +109,14 @@ export class EventRecorder {
           index: event.index,
           version: event.version,
           value: event.value,
-          count: 1
+          count: 1,
         } as IToggleCounter);
       }
     }
     return {
       startTime: start,
       endTime: end,
-      counters: counters
+      counters: counters,
     } as IAccess;
   }
 

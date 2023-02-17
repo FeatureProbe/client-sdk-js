@@ -25,5 +25,5 @@ export {
   IReturnValue,
   IOption,
   IPlatForm,
-  initializePlatform
+  initializePlatform,
 };
