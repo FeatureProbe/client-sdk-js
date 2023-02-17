@@ -22,7 +22,7 @@ export interface IAccess {
   counters: { [key: string]: IToggleCounter[] };
 }
 
-export type IRetureValue = string | number | boolean | Record<string, unknown>;
+export type IReturnValue = string | number | boolean | Record<string, unknown>;
 
 export interface FPDetail {
   /**
@@ -49,6 +49,16 @@ export interface FPDetail {
    * Why return this value, like disabled, default, not exist and so on.
    */
   reason: string;
+
+  /**
+   * Whether to report access events.
+   */
+  trackAccessEvents?: boolean;
+
+  /**
+   * Toggle last modified timestamp
+   */
+  lastModified?: number;
 }
 
 export interface FPConfig {
@@ -95,7 +105,12 @@ export interface FPConfig {
   /**
    * Milliseconds for SDK to initialize, SDK will emit an `error` event when milliseconds reach.
    */
-  timeoutInterval?: number
+  timeoutInterval?: number;
+
+  /**
+   * Whether SDK should report pageview and click event automatically. Default value is true.
+   */
+  enableAutoReporting?: boolean;
 }
 
 export interface FPStorageProvider {
@@ -108,7 +123,6 @@ export interface FPStorageProvider {
    *  @param data
    *   The data of the storage item.
    */
-
   setItem: (key: string, data: string) => Promise<void>;
 
   /**
@@ -145,4 +159,52 @@ export interface IPlatForm {
 
 export interface IOption {
   platform: IPlatForm
+}
+
+export interface AccessEvent {
+  kind: string;
+  time: number;
+  user: string;
+  key: string;
+  value: boolean | string | number | Record<string, unknown>;
+  variationIndex: number;
+  ruleIndex: number | null;
+  version: number;
+}
+
+export interface CustomEvent {
+  kind: string;
+  name: string;
+  time: number;
+  user: string;
+  value: unknown;
+}
+
+export interface ClickEvent {
+  kind: string;
+  name: string;
+  time: number;
+  user: string;
+  url: string;
+  selector: string;
+}
+
+export interface PageViewEvent {
+  kind: string;
+  name: string;
+  time: number;
+  user: string;
+  url: string;
+}
+
+export interface IEventValue {
+  matcher: string;
+  name: string;
+  type: string;
+  url: string;
+  selector?: string;
+}
+
+export interface IEvent {
+  [key: string]: IEventValue
 }

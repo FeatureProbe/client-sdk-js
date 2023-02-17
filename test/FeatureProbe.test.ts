@@ -15,6 +15,7 @@ test("FeatureProbe init with invalid param", () => {
     new FeatureProbe({
       clientSdkKey: "client-sdk-key1",
       user: new FPUser(),
+      enableAutoReporting: false,
     });
   }).toThrow();
 
@@ -23,6 +24,7 @@ test("FeatureProbe init with invalid param", () => {
       remoteUrl: "invalid url",
       clientSdkKey: "",
       user: new FPUser(),
+      enableAutoReporting: false,
     });
   }).toThrow();
 
@@ -32,6 +34,7 @@ test("FeatureProbe init with invalid param", () => {
       clientSdkKey: "client-sdk-key1",
       user: new FPUser(),
       refreshInterval: -1,
+      enableAutoReporting: false,
     });
   }).toThrow();
 
@@ -39,6 +42,7 @@ test("FeatureProbe init with invalid param", () => {
     new FeatureProbe({
       clientSdkKey: "client-sdk-key1",
       user: new FPUser(),
+      enableAutoReporting: false,
     });
   }).toThrow();
 
@@ -47,6 +51,7 @@ test("FeatureProbe init with invalid param", () => {
       togglesUrl: "http://127.0.0.1:4007",
       clientSdkKey: "client-sdk-key1",
       user: new FPUser(),
+      enableAutoReporting: false,
     });
   }).toThrow();
 
@@ -55,6 +60,7 @@ test("FeatureProbe init with invalid param", () => {
       eventsUrl: "http://127.0.0.1:4007",
       clientSdkKey: "client-sdk-key1",
       user: new FPUser(),
+      enableAutoReporting: false,
     });
   }).toThrow();
 });
@@ -65,6 +71,7 @@ test("FeatureProbe init", () => {
       remoteUrl: "http://127.0.0.1:4007",
       clientSdkKey: "client-sdk-key1",
       user: new FPUser(),
+      enableAutoReporting: false,
     })
   ).not.toBeNull();
 });
@@ -76,6 +83,7 @@ test("FeatureProbe request", (done) => {
     remoteUrl: "http://127.0.0.1:4007",
     clientSdkKey: "client-sdk-key1",
     user: user,
+    enableAutoReporting: false,
   });
   fp.start();
   fp.on("ready", function () {
@@ -92,6 +100,7 @@ test("FeatureProbe bool toggle", (done) => {
     remoteUrl: "http://127.0.0.1:4007",
     clientSdkKey: "client-sdk-key1",
     user: user,
+    enableAutoReporting: false,
   });
   fp.start();
   fp.on("ready", function () {
@@ -117,6 +126,7 @@ test("FeatureProbe number toggle", (done) => {
     remoteUrl: "http://127.0.0.1:4007",
     clientSdkKey: "client-sdk-key1",
     user: user,
+    enableAutoReporting: false,
   });
   fp.start();
 
@@ -143,6 +153,7 @@ test("FeatureProbe string toggle", (done) => {
     remoteUrl: "http://127.0.0.1:4007",
     clientSdkKey: "client-sdk-key1",
     user: user,
+    enableAutoReporting: false,
   });
   fp.start();
   fp.on("ready", function () {
@@ -169,6 +180,7 @@ test("FeatureProbe json toggle", (done) => {
     remoteUrl: "http://127.0.0.1:4007",
     clientSdkKey: "client-sdk-key1",
     user: user,
+    enableAutoReporting: false,
   });
   fp.start();
 
@@ -198,6 +210,7 @@ test("FeatureProbe all toggle", (done) => {
     remoteUrl: "http://127.0.0.1:4007",
     clientSdkKey: "client-sdk-key1",
     user: user,
+    enableAutoReporting: false,
   });
   fp.start();
 
@@ -224,6 +237,7 @@ test("FeatureProbe used toggle value before ready", (done) => {
     remoteUrl: "http://127.0.0.1:4007",
     clientSdkKey: "client-sdk-key1",
     user: user,
+    enableAutoReporting: false,
   });
   fp.start();
 
@@ -245,6 +259,7 @@ test("FeatureProbe used toggle value with error key", (done) => {
     remoteUrl: "http://127.0.0.1:4007",
     clientSdkKey: "client-sdk-key1",
     user: user,
+    enableAutoReporting: false,
   });
   fp.start();
 
@@ -269,6 +284,7 @@ test("FeatureProbe logout", (done) => {
     remoteUrl: "http://127.0.0.1:4007",
     clientSdkKey: "client-sdk-key1",
     user: user,
+    enableAutoReporting: false,
   });
   fp.logout();
   expect(fp.getUser().get('city')).toBe(undefined);
@@ -281,6 +297,7 @@ test("feature promise api", (done) => {
     remoteUrl: "http://127.0.0.1:4007",
     clientSdkKey: "client-sdk-key1",
     user: new FPUser(),
+    enableAutoReporting: false,
   });
 
   fp.waitUntilReady().then(() => {
@@ -300,6 +317,7 @@ test("FeatureProbe fetch error", (done) => {
     clientSdkKey: "client-sdk-key1",
     user: new FPUser(),
     refreshInterval: 10000,
+    enableAutoReporting: false,
   });
   fp.start();
 
@@ -315,6 +333,7 @@ test("FeatureProbe fetch error trigger error event", (done) => {
     user: new FPUser(),
     refreshInterval: 10000,
     timeoutInterval: 1000,
+    enableAutoReporting: false,
   });
 
   fp.on('error', () =>{

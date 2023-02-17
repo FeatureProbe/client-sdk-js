@@ -1,6 +1,6 @@
 import { FPUser } from './FPUser';
 import { FeatureProbe } from './FeatureProbe';
-import { FPConfig, FPStorageProvider, IOption, FPDetail, IHttpRequest } from './types';
+import { FPConfig, FPStorageProvider, IOption, FPDetail, IHttpRequest, IReturnValue, IPlatForm } from './types';
 import { setPlatform } from './platform';
 
 /**
@@ -15,4 +15,15 @@ function initializePlatform(options: IOption): void {
   }
 }
 
-export { FPUser, FeatureProbe, FPDetail, FPConfig, FPStorageProvider, IHttpRequest, initializePlatform };
+export { 
+  FPUser,
+  FeatureProbe,
+  FPDetail,
+  FPConfig,
+  FPStorageProvider,
+  IHttpRequest,
+  IReturnValue,
+  IOption,
+  IPlatForm,
+  initializePlatform
+};

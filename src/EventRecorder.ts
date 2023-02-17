@@ -1,12 +1,12 @@
 import { getPlatform } from "./platform";
-import { IAccessEvent, IAccess, IToggleCounter } from "./types";
+import { IAccessEvent, IAccess, IToggleCounter, ClickEvent, PageViewEvent, AccessEvent, CustomEvent } from "./types";
 
 export class EventRecorder {
   private clientSdkKey: string;
   private eventsUrl: string;
-
   private closed: boolean;
-  private sendQueue: IAccessEvent[];
+  private sendAccessQueue: IAccessEvent[];
+  private sendEventQueue: (AccessEvent | CustomEvent | ClickEvent | PageViewEvent)[];
   private taskQueue: AsyncBlockingQueue<Promise<void>>;
   private timer: NodeJS.Timer;
   private readonly dispatch: Promise<void>;
@@ -16,26 +16,43 @@ export class EventRecorder {
     this.timer = setInterval(() => this.flush(), value);
   }
 
+  get accessQueue(): IAccessEvent[] {
+    return this.sendAccessQueue;
+  }
+
+  get eventQueue(): (AccessEvent | CustomEvent | ClickEvent | PageViewEvent)[] {
+    return this.sendEventQueue;
+  }
+
   constructor(
     clientSdkKey: string,
-    eventsUrl: URL | string,
+    eventsUrl: string,
     flushInterval: number
   ) {
     this.clientSdkKey = clientSdkKey;
-    this.eventsUrl = new URL(eventsUrl).toString();
+    this.eventsUrl = eventsUrl;
     this.closed = false;
-    this.sendQueue = [];
+    this.sendAccessQueue = [];
+    this.sendEventQueue = [];
     this.taskQueue = new AsyncBlockingQueue<Promise<void>>();
     this.timer = setInterval(() => this.flush(), flushInterval);
     this.dispatch = this.startDispatch();
   }
 
-  public record(event: IAccessEvent): void {
+  public recordAccessEvent(accessEvent: IAccessEvent): void {
     if (this.closed) {
       console.warn("Trying to push access record to a closed EventProcessor, omitted");
       return;
     }
-    this.sendQueue.push(event);
+    this.sendAccessQueue.push(accessEvent);
+  }
+
+  public recordTrackEvent(trackEvents: ClickEvent | PageViewEvent | AccessEvent | CustomEvent): void {
+    if (this.closed) {
+      console.warn("Trying to push access record to a closed EventProcessor, omitted");
+      return;
+    }
+    this.sendEventQueue.push(trackEvents);
   }
 
   public flush(): void {
@@ -63,7 +80,7 @@ export class EventRecorder {
     }
   }
 
-  private static prepareSendData(events: IAccessEvent[]): IAccess {
+  private prepareSendData(events: IAccessEvent[]): IAccess {
     let start = -1, end = -1;
     const counters: { [key: string]: IToggleCounter[] } = {};
     for (const event of events) {
@@ -104,22 +121,26 @@ export class EventRecorder {
   }
 
   private async doFlush(): Promise<void> {
-    if (this.sendQueue.length === 0) {
+    if (this.sendAccessQueue.length === 0 && this.sendEventQueue.length === 0) {
       return;
     }
-    const events = Object.assign([], this.sendQueue);
-    this.sendQueue = [];
+    const accessEvents = Object.assign([], this.sendAccessQueue);
+    const trackEvents = Object.assign([], this.sendEventQueue);
+    
+    this.sendAccessQueue = [];
+    this.sendEventQueue = [];
+
     const eventRepos = [{
-      events: events,
-      access: EventRecorder.prepareSendData(events),
+      events: trackEvents,
+      access: accessEvents.length === 0 ? null : this.prepareSendData(accessEvents),
     }];
 
     getPlatform().httpRequest.post(this.eventsUrl, {
-      Authorization: this.clientSdkKey,
+      "Authorization": this.clientSdkKey,
       "Content-Type": "application/json",
-      UA: getPlatform()?.UA,
+      "UA": getPlatform()?.UA,
     }, JSON.stringify(eventRepos), () => {
-      // TODO: 
+      // Do nothing
     }, (error: string) => {
       console.error("FeatureProbe JS SDK: Error reporting events: ", error);
     });
@@ -127,7 +148,7 @@ export class EventRecorder {
   }
 }
 
-// cred: https://stackoverflow.com/questions/47157428/how-to-implement-a-pseudo-blocking-async-queue-in-js-ts
+// Reference: https://stackoverflow.com/questions/47157428/how-to-implement-a-pseudo-blocking-async-queue-in-js-ts
 class AsyncBlockingQueue<T> {
   private promises: Promise<T>[];
   private resolvers: ((t: T) => void)[];

@@ -1,11 +1,12 @@
 import { TinyEmitter } from "tiny-emitter";
 import { Base64 } from "js-base64";
 import { FPUser } from "./FPUser";
-import { FPDetail, FPStorageProvider, FPConfig, IRetureValue } from "./types";
+import { FPDetail, FPStorageProvider, FPConfig, IReturnValue } from "./types";
 import { io, Socket } from "socket.io-client";
 import { DefaultEventsMap } from "@socket.io/component-emitter";
 import { getPlatform } from "./platform";
-import { EventRecorder } from "./Event";
+import { EventRecorder } from "./EventRecorder";
+import reportEvents from "./autoReportEvents";
 const KEY = "repository";
 
 const EVENTS = {
@@ -29,6 +30,7 @@ const STATUS = {
 class FeatureProbe extends TinyEmitter {
   private togglesUrl: string;
   private eventsUrl: string;
+  private getEventsUrl: string;
   private realtimeUrl: string;
   private realtimePath: string;
   private refreshInterval: number;
@@ -53,7 +55,8 @@ class FeatureProbe extends TinyEmitter {
     clientSdkKey,
     user,
     refreshInterval = 1000,
-    timeoutInterval = 10000
+    timeoutInterval = 10000,
+    enableAutoReporting = true,
   }: FPConfig) {
     super();
     if (!clientSdkKey) {
@@ -78,6 +81,7 @@ class FeatureProbe extends TinyEmitter {
     this.toggles = undefined;
     this.togglesUrl = togglesUrl ?? remoteUrl + "/api/client-sdk/toggles";
     this.eventsUrl = eventsUrl ?? remoteUrl + "/api/events";
+    this.getEventsUrl = eventsUrl ?? remoteUrl + "/api/client-sdk/events";
     this.realtimeUrl = realtimeUrl ?? remoteUrl + "/realtime";
     this.realtimePath = realtimePath ?? "/server/realtime";
     this.user = user;
@@ -88,17 +92,22 @@ class FeatureProbe extends TinyEmitter {
     this.storage = getPlatform().localStorage;
     this.readyPromise = null;
     this.eventRecorder = new EventRecorder(this.clientSdkKey, this.eventsUrl, this.refreshInterval);
+
+    if (enableAutoReporting) {
+      reportEvents(this.clientSdkKey, user, this.getEventsUrl, this.eventRecorder);
+    }
   }
 
   /**
    * Start the FeatureProbe client.
    */
   public async start(): Promise<void> {
-    this.connectSocket();
+    // this.connectSocket();
 
     if (this.status !== STATUS.START) {
       return;
     }
+
     this.status = STATUS.PENDING;
 
     this.timeoutTimer = setTimeout(() => {
@@ -317,7 +326,20 @@ class FeatureProbe extends TinyEmitter {
     this.eventRecorder?.flush();
   }
 
-  static newForTest(toggles: { [key: string]: string }): FeatureProbe {
+  /**
+   * Record custom events, value is optional.
+   */
+  public track(name: string, user: string, value?: unknown): void {
+    this.eventRecorder?.recordTrackEvent({
+      kind: "custom",
+      name,
+      time: Date.now(),
+      user,
+      value,
+    });
+  }
+
+  static newForTest(toggles: { [key: string]: boolean }): FeatureProbe {
     const fp = new FeatureProbe({
       remoteUrl: "http://127.0.0.1:4000",
       clientSdkKey: "_",
@@ -359,7 +381,7 @@ class FeatureProbe extends TinyEmitter {
     this.socket = socket;
   }
 
-  private toggleValue(key: string, defaultValue: IRetureValue, valueType: string): IRetureValue {
+  private toggleValue(key: string, defaultValue: IReturnValue, valueType: string): IReturnValue {
     if (this.toggles == undefined) {
       return defaultValue;
     }
@@ -371,14 +393,29 @@ class FeatureProbe extends TinyEmitter {
 
     const v = detail.value;
     if (typeof v == valueType) {
-      this.eventRecorder?.record({
-        time: Date.now(),
+      const timestamp = Date.now();
+
+      this.eventRecorder?.recordAccessEvent({
+        time: timestamp,
         key: key,
         value: detail.value,
         index: detail.variationIndex ?? -1,
         version: detail.version ?? 0,
         reason: detail.reason
       });
+
+      if (detail.trackAccessEvents) {
+        this.eventRecorder?.recordTrackEvent({
+          kind: "access",
+          time: timestamp,
+          user: this.getUser().getKey(),
+          key: key,
+          value: detail.value,
+          variationIndex: detail.variationIndex ?? -1,
+          ruleIndex: detail.ruleIndex ?? null,
+          version: detail.version ?? 0,
+        });
+      }
 
       return v;
     } else {
@@ -388,11 +425,9 @@ class FeatureProbe extends TinyEmitter {
 
   private toggleDetail(
     key: string,
-    defaultValue: IRetureValue,
+    defaultValue: IReturnValue,
     valueType: string
   ): FPDetail {
-    // this.sendEvents(key);
-
     if (this.toggles == undefined) {
       return {
         value: defaultValue,
@@ -413,14 +448,29 @@ class FeatureProbe extends TinyEmitter {
         reason: "Toggle: [" + key + "] not found",
       };
     } else if (typeof detail.value === valueType) {
-      this.eventRecorder?.record({
-        time: Date.now(),
+      const timestamp = Date.now();
+
+      this.eventRecorder?.recordAccessEvent({
+        time: timestamp,
         key: key,
         value: detail.value,
         index: detail.variationIndex ?? -1,
         version: detail.version ?? 0,
         reason: detail.reason
       });
+
+      if (detail.trackAccessEvents) {
+        this.eventRecorder?.recordTrackEvent({
+          kind: "access",
+          time: timestamp,
+          user: this.getUser().getKey(),
+          key: key,
+          value: detail.value,
+          variationIndex: detail.variationIndex ?? -1,
+          ruleIndex: detail.ruleIndex ?? null,
+          version: detail.version ?? 0,
+        });
+      }
       
       return detail;
     } else {
@@ -461,40 +511,6 @@ class FeatureProbe extends TinyEmitter {
       console.error("FeatureProbe JS SDK: Error getting toggles: ", error);
     })
   }
-
-  // private async sendEvents(key: string): Promise<void> {
-  //   if (this.toggles && this.toggles[key]) {
-  //     const timestamp = Date.now();
-  //     const payload: IParams[] = [
-  //       {
-  //         access: {
-  //           startTime: timestamp,
-  //           endTime: timestamp,
-  //           counters: {
-  //             [key]: [
-  //               {
-  //                 count: 1,
-  //                 value: this.toggles[key].value,
-  //                 index: this.toggles[key].variationIndex,
-  //                 version: this.toggles[key].version,
-  //               },
-  //             ],
-  //           },
-  //         },
-  //       },
-  //     ];
-
-  //     getPlatform().httpRequest.post(this.eventsUrl, {
-  //       Authorization: this.clientSdkKey,
-  //       "Content-Type": "application/json",
-  //       UA: getPlatform()?.UA,
-  //     }, JSON.stringify(payload), () => {
-  //       //
-  //     }, (error: string) => {
-  //       console.error("FeatureProbe JS SDK: Error reporting events: ", error);
-  //     })
-  //   }
-  // }
 
   // Emit `ready` event if toggles are successfully returned from server
   private successInitialized() {
