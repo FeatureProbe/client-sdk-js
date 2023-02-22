@@ -23,8 +23,8 @@ const STATUS = {
   ERROR: "error",
 };
 
-const REFRESHINTERVAL = 1000;
-const TIMEOUTINTERVAL = 10000;
+const REFRESH_INTERVAL = 1000;
+const TIMEOUT_INTERVAL = 10000;
 
 /**
  * You can obtainan a client of FeatureProbe, 
@@ -57,8 +57,8 @@ class FeatureProbe extends TinyEmitter {
     realtimePath,
     clientSdkKey,
     user,
-    refreshInterval = REFRESHINTERVAL,
-    timeoutInterval = TIMEOUTINTERVAL,
+    refreshInterval = REFRESH_INTERVAL,
+    timeoutInterval = TIMEOUT_INTERVAL,
     enableAutoReporting = true,
   }: FPConfig) {
     super();
@@ -398,15 +398,15 @@ class FeatureProbe extends TinyEmitter {
     if (typeof v == valueType) {
       const timestamp = Date.now();
 
-      const DEFAULTVARIATIONINDEX = -1;
-      const DEFAULTVERSION = 0;
+      const DEFAULT_VARIATION_INDEX = -1;
+      const DEFAULT_VERSION = 0;
 
       this.eventRecorder?.recordAccessEvent({
         time: timestamp,
         key: key,
         value: detail.value,
-        index: detail.variationIndex ?? DEFAULTVARIATIONINDEX,
-        version: detail.version ?? DEFAULTVERSION,
+        index: detail.variationIndex ?? DEFAULT_VARIATION_INDEX,
+        version: detail.version ?? DEFAULT_VERSION,
         reason: detail.reason,
       });
 
@@ -417,9 +417,9 @@ class FeatureProbe extends TinyEmitter {
           user: this.getUser().getKey(),
           key: key,
           value: detail.value,
-          variationIndex: detail.variationIndex ?? DEFAULTVARIATIONINDEX,
+          variationIndex: detail.variationIndex ?? DEFAULT_VARIATION_INDEX,
           ruleIndex: detail.ruleIndex ?? null,
-          version: detail.version ?? DEFAULTVERSION,
+          version: detail.version ?? DEFAULT_VERSION,
         });
       }
 

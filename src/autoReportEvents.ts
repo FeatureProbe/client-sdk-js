@@ -3,7 +3,7 @@ import { FPUser } from ".";
 import { EventRecorder } from "./EventRecorder";
 import { ClickEvent, IEvent, IEventValue, PageViewEvent } from "./types";
 
-const WATCHURLCHANGEINTERVAL = 300;
+const WATCH_URL_CHANGE_INTERVAL = 300;
 
 // Reference: https://github.com/sindresorhus/escape-string-regexp
 function escapeStringRegexp(string: string): string {
@@ -197,7 +197,7 @@ export default function reportEvents(
    */
   setInterval(() => {
     watchUrlChange();
-  }, WATCHURLCHANGEINTERVAL);
+  }, WATCH_URL_CHANGE_INTERVAL);
 
   /**
    * Get events data from Server API

@@ -6,7 +6,7 @@ import { FetchMock } from "jest-fetch-mock";
 import * as data from "./fixtures/events.json";
 
 const _fetch = fetch as FetchMock;
-const FLUSHINTERVAL = 10000;
+const FLUSH_INTERVAL = 10000;
 
 beforeEach(() => {});
 
@@ -18,7 +18,7 @@ test("report events", (done) => {
   _fetch.mockResponseOnce(JSON.stringify(data));
   const clientSdkKey = 'clientSdkKey';
   const eventsUrl = 'http://featureprobe.io/server/event';
-  const recorder = new EventRecorder(clientSdkKey, eventsUrl, FLUSHINTERVAL);
+  const recorder = new EventRecorder(clientSdkKey, eventsUrl, FLUSH_INTERVAL);
   const user = new FPUser('11111').with("city", "2");
   const DELAY = 100;
 
