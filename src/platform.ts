@@ -35,6 +35,7 @@ const httpRequest:IHttpRequest = {
       cache: "no-cache",
       headers: headers,
       body: data,
+      keepalive: true,
     })
     .then(response => {
       if (response.status >= 200 && response.status < 300) {

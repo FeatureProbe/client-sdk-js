@@ -7,6 +7,8 @@ import { DefaultEventsMap } from "@socket.io/component-emitter";
 import { getPlatform } from "./platform";
 import { EventRecorder } from "./EventRecorder";
 import reportEvents from "./autoReportEvents";
+import flushEventBeforPageUnload from "./flushEvents";
+
 const KEY = "repository";
 
 const EVENTS = {
@@ -96,6 +98,8 @@ class FeatureProbe extends TinyEmitter {
     if (enableAutoReporting) {
       reportEvents(this.clientSdkKey, user, this.getEventsUrl, this.eventRecorder);
     }
+
+    flushEventBeforPageUnload(this.eventRecorder);
   }
 
   /**
