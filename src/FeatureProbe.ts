@@ -25,6 +25,9 @@ const STATUS = {
   ERROR: "error",
 };
 
+const REFRESH_INTERVAL = 1000;
+const TIMEOUT_INTERVAL = 10000;
+
 /**
  * You can obtainan a client of FeatureProbe, 
  * which provides access to all of the SDK's functionality.
@@ -56,8 +59,8 @@ class FeatureProbe extends TinyEmitter {
     realtimePath,
     clientSdkKey,
     user,
-    refreshInterval = 1000,
-    timeoutInterval = 10000,
+    refreshInterval = REFRESH_INTERVAL,
+    timeoutInterval = TIMEOUT_INTERVAL,
     enableAutoReporting = true,
   }: FPConfig) {
     super();
@@ -100,6 +103,29 @@ class FeatureProbe extends TinyEmitter {
     }
 
     flushEventBeforPageUnload(this.eventRecorder);
+  }
+
+  public static newForTest(toggles: { [key: string]: boolean }): FeatureProbe {
+    const fp = new FeatureProbe({
+      remoteUrl: "http://127.0.0.1:4000",
+      clientSdkKey: "_",
+      user: new FPUser(),
+      timeoutInterval: 1000,
+    });
+    const _toggles: { [key: string]: FPDetail } = {};
+    for (const key in toggles) {
+      const value = toggles[key];
+      _toggles[key] = {
+        value: value,
+        ruleIndex: null,
+        variationIndex: null,
+        version: 0,
+        reason: "",
+      };
+    }
+    fp.toggles = _toggles;
+    fp.successInitialized();
+    return fp;
   }
 
   /**
@@ -343,29 +369,6 @@ class FeatureProbe extends TinyEmitter {
     });
   }
 
-  static newForTest(toggles: { [key: string]: boolean }): FeatureProbe {
-    const fp = new FeatureProbe({
-      remoteUrl: "http://127.0.0.1:4000",
-      clientSdkKey: "_",
-      user: new FPUser(),
-      timeoutInterval: 1000,
-    });
-    const _toggles: { [key: string]: FPDetail } = {};
-    for (const key in toggles) {
-      const value = toggles[key];
-      _toggles[key] = {
-        value: value,
-        ruleIndex: null,
-        variationIndex: null,
-        version: 0,
-        reason: "",
-      };
-    }
-    fp.toggles = _toggles;
-    fp.successInitialized();
-    return fp;
-  }
-
   private connectSocket() {
     const socket = io(this.realtimeUrl, {
       path: this.realtimePath,
@@ -399,13 +402,16 @@ class FeatureProbe extends TinyEmitter {
     if (typeof v == valueType) {
       const timestamp = Date.now();
 
+      const DEFAULT_VARIATION_INDEX = -1;
+      const DEFAULT_VERSION = 0;
+
       this.eventRecorder?.recordAccessEvent({
         time: timestamp,
         key: key,
         value: detail.value,
-        index: detail.variationIndex ?? -1,
-        version: detail.version ?? 0,
-        reason: detail.reason
+        index: detail.variationIndex ?? DEFAULT_VARIATION_INDEX,
+        version: detail.version ?? DEFAULT_VERSION,
+        reason: detail.reason,
       });
 
       if (detail.trackAccessEvents) {
@@ -415,9 +421,9 @@ class FeatureProbe extends TinyEmitter {
           user: this.getUser().getKey(),
           key: key,
           value: detail.value,
-          variationIndex: detail.variationIndex ?? -1,
+          variationIndex: detail.variationIndex ?? DEFAULT_VARIATION_INDEX,
           ruleIndex: detail.ruleIndex ?? null,
-          version: detail.version ?? 0,
+          version: detail.version ?? DEFAULT_VERSION,
         });
       }
 
@@ -498,7 +504,7 @@ class FeatureProbe extends TinyEmitter {
       "Content-Type": "application/json",
       UA: getPlatform()?.UA,
     }, {
-      user: userParam
+      user: userParam,
     }, (json: unknown) => {
       if (this.status !== STATUS.ERROR) {
         this.toggles = json as { [key: string]: FPDetail; } | undefined;

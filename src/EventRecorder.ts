@@ -11,19 +11,6 @@ export class EventRecorder {
   private timer: NodeJS.Timer;
   private readonly dispatch: Promise<void>;
 
-  set flushInterval(value: number) {
-    clearInterval(this.timer);
-    this.timer = setInterval(() => this.flush(), value);
-  }
-
-  get accessQueue(): IAccessEvent[] {
-    return this.sendAccessQueue;
-  }
-
-  get eventQueue(): (AccessEvent | CustomEvent | ClickEvent | PageViewEvent)[] {
-    return this.sendEventQueue;
-  }
-
   constructor(
     clientSdkKey: string,
     eventsUrl: string,
@@ -37,6 +24,19 @@ export class EventRecorder {
     this.taskQueue = new AsyncBlockingQueue<Promise<void>>();
     this.timer = setInterval(() => this.flush(), flushInterval);
     this.dispatch = this.startDispatch();
+  }
+
+  set flushInterval(value: number) {
+    clearInterval(this.timer);
+    this.timer = setInterval(() => this.flush(), value);
+  }
+
+  get accessQueue(): IAccessEvent[] {
+    return this.sendAccessQueue;
+  }
+
+  get eventQueue(): (AccessEvent | CustomEvent | ClickEvent | PageViewEvent)[] {
+    return this.sendEventQueue;
   }
 
   public recordAccessEvent(accessEvent: IAccessEvent): void {
@@ -158,27 +158,28 @@ class AsyncBlockingQueue<T> {
     this.promises = [];
   }
 
-  private add() {
-    this.promises.push(new Promise(resolve => {
-      this.resolvers.push(resolve);
-    }));
-  }
-
-  enqueue(t: T) {
+  public enqueue(t: T) {
     if (!this.resolvers.length) {
       this.add();
     }
     this.resolvers.shift()?.(t);
   }
 
-  dequeue(): Promise<T> | undefined {
+  public dequeue(): Promise<T> | undefined {
     if (!this.promises.length) {
       this.add();
     }
     return this.promises.shift();
   }
 
-  isEmpty() {
+  public isEmpty() {
     return !this.promises.length;
   }
+
+  private add() {
+    this.promises.push(new Promise(resolve => {
+      this.resolvers.push(resolve);
+    }));
+  }
+
 }

@@ -3,15 +3,17 @@ import { FPUser } from ".";
 import { EventRecorder } from "./EventRecorder";
 import { ClickEvent, IEvent, IEventValue, PageViewEvent } from "./types";
 
+const WATCH_URL_CHANGE_INTERVAL = 300;
+
 // Reference: https://github.com/sindresorhus/escape-string-regexp
 function escapeStringRegexp(string: string): string {
-	if (typeof string !== 'string') {
-		throw new TypeError('Expected a string');
-	}
+  if (typeof string !== 'string') {
+    throw new TypeError('Expected a string');
+  }
 
-	return string
-		.replace(/[|\\{}()[\]^$+*?.]/g, '\\$&')
-		.replace(/-/g, '\\x2d');
+  return string
+    .replace(/[|\\{}()[\]^$+*?.]/g, '\\$&')
+    .replace(/-/g, '\\x2d');
 }
 
 /**
@@ -54,7 +56,7 @@ export default function reportEvents(
   clientSdkKey: string, 
   user: FPUser, 
   getEventsUrl: string, 
-  eventRecorder: EventRecorder
+  eventRecorder: EventRecorder,
 ): void {
   let previousUrl: string = window.location.href;
   let currentUrl;
@@ -100,9 +102,8 @@ export default function reportEvents(
   function getClickEvents(event: MouseEvent, clickEvents: IEventValue[]) {
     const matchedEvents = [];
 
-    for (let i = 0; i < clickEvents.length; i++) {
+    for (const clickEvent of clickEvents) {
       let target = event.target;
-      const clickEvent = clickEvents[i];
       const selector = clickEvent.selector;
 
       const elements = selector && document.querySelectorAll(selector);
@@ -152,8 +153,8 @@ export default function reportEvents(
     if (clickEvents.length > 0) {
       cb = function(event: MouseEvent) {
         const result = getClickEvents(event, clickEvents);
-        for (let i = 0; i < result.length; i++) {
-          sendEvents('click', result[i]);
+        for (const event of result) {
+          sendEvents('click', event);
         }
       };
   
@@ -196,7 +197,7 @@ export default function reportEvents(
    */
   setInterval(() => {
     watchUrlChange();
-  }, 300);
+  }, WATCH_URL_CHANGE_INTERVAL);
 
   /**
    * Get events data from Server API
