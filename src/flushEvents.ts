@@ -1,7 +1,7 @@
 import { EventRecorder } from "./EventRecorder";
 
 export default function flushEventBeforPageUnload(
-  eventRecorder: EventRecorder
+  eventRecorder: EventRecorder,
 ): void {
 
   const flushHandler = () => {
