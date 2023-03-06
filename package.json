@@ -1,6 +1,6 @@
 {
   "name": "featureprobe-client-sdk-js",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "FeatureProbe Client Side SDK for JavaScript",
   "main": "./dist/src/index.js",
   "types": "./dist/src/index.d.ts",

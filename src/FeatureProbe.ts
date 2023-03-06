@@ -359,12 +359,12 @@ class FeatureProbe extends TinyEmitter {
   /**
    * Record custom events, value is optional.
    */
-  public track(name: string, user: string, value?: unknown): void {
+  public track(name: string, value?: unknown): void {
     this.eventRecorder?.recordTrackEvent({
       kind: "custom",
       name,
       time: Date.now(),
-      user,
+      user: this.getUser().getKey(),
       value,
     });
   }
