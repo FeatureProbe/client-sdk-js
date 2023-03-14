@@ -57,7 +57,7 @@ const httpRequest:IHttpRequest = {
 };
 
 const Platform: {
-  default: IPlatForm
+  default: IPlatForm;
 } = {
   default: {
     UA: UA,
