@@ -135,7 +135,7 @@ export class EventRecorder {
       access: accessEvents.length === 0 ? null : this.prepareSendData(accessEvents),
     }];
 
-    getPlatform().httpRequest.post(this.eventsUrl, {
+    return getPlatform().httpRequest.post(this.eventsUrl, {
       "Authorization": this.clientSdkKey,
       "Content-Type": "application/json",
       "UA": getPlatform()?.UA,

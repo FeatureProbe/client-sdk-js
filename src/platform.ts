@@ -1,5 +1,6 @@
 import "whatwg-fetch";
 import { IHttpRequest, IPlatForm } from "./types";
+import { io } from "socket.io-client";
 import StorageProvider from "./localStorage";
 import pkg from "../package.json";
 
@@ -55,13 +56,16 @@ const httpRequest:IHttpRequest = {
   }
 };
 
-const Platform = {
+const Platform: {
+  default: IPlatForm
+} = {
   default: {
     UA: UA,
     localStorage: new StorageProvider(),
     httpRequest: httpRequest,
+    socket: io,
   }
-}
+}; 
 
 function setPlatform(platform: IPlatForm): void {
   Platform.default = platform;

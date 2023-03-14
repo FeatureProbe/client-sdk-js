@@ -2,8 +2,6 @@ import { TinyEmitter } from "tiny-emitter";
 import { Base64 } from "js-base64";
 import { FPUser } from "./FPUser";
 import { FPDetail, FPStorageProvider, FPConfig, IReturnValue } from "./types";
-import { io, Socket } from "socket.io-client";
-import { DefaultEventsMap } from "@socket.io/component-emitter";
 import { getPlatform } from "./platform";
 import { EventRecorder } from "./EventRecorder";
 import reportEvents from "./autoReportEvents";
@@ -48,7 +46,6 @@ class FeatureProbe extends TinyEmitter {
   private status: string;
   private timeoutInterval: number;
   private storage: FPStorageProvider;
-  private socket?: Socket<DefaultEventsMap, DefaultEventsMap>;
   private eventRecorder?: EventRecorder;
 
   constructor({
@@ -98,11 +95,13 @@ class FeatureProbe extends TinyEmitter {
     this.readyPromise = null;
     this.eventRecorder = new EventRecorder(this.clientSdkKey, this.eventsUrl, this.refreshInterval);
 
-    if (enableAutoReporting) {
+    if (enableAutoReporting && window && document) {
       reportEvents(this.clientSdkKey, user, this.getEventsUrl, this.eventRecorder);
     }
 
-    flushEventBeforPageUnload(this.eventRecorder);
+    if (window && document) {
+      flushEventBeforPageUnload(this.eventRecorder);
+    }
   }
 
   public static newForTest(toggles: { [key: string]: boolean }): FeatureProbe {
@@ -370,7 +369,7 @@ class FeatureProbe extends TinyEmitter {
   }
 
   private connectSocket() {
-    const socket = io(this.realtimeUrl, {
+    const socket = getPlatform().socket(this.realtimeUrl, {
       path: this.realtimePath,
       transports: ["websocket"],
     });
@@ -384,8 +383,6 @@ class FeatureProbe extends TinyEmitter {
         await this.fetchToggles();
       })();
     });
-
-    this.socket = socket;
   }
 
   private toggleValue(key: string, defaultValue: IReturnValue, valueType: string): IReturnValue {
