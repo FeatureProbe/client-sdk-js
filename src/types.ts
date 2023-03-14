@@ -1,4 +1,5 @@
 import { FPUser } from "./FPUser";
+import { Socket, ManagerOptions, SocketOptions } from "socket.io-client";
 
 export interface IAccessEvent {
   time: number;
@@ -155,6 +156,7 @@ export interface IPlatForm {
   localStorage: FPStorageProvider;
   UA: string;
   httpRequest: IHttpRequest;
+  socket(uri: string, opts?: Partial<ManagerOptions & SocketOptions>): Socket;
 }
 
 export interface IOption {
