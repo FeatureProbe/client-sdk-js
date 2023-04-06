@@ -1,6 +1,5 @@
 import { getPlatform } from "./platform";
-import { FPUser } from ".";
-import { EventRecorder } from "./EventRecorder";
+import { FeatureProbe } from ".";
 import { ClickEvent, IEvent, IEventValue, PageViewEvent } from "./types";
 
 const WATCH_URL_CHANGE_INTERVAL = 300;
@@ -52,12 +51,8 @@ function matchUrl(event: IEventValue): boolean {
   return regex.test(testUrl);
 }
 
-export default function reportEvents(
-  clientSdkKey: string, 
-  user: FPUser, 
-  getEventsUrl: string, 
-  eventRecorder: EventRecorder,
-): void {
+export default function reportEvents(client: FeatureProbe): void {
+  const { clientSdkKey, user, eventsUrl, eventRecorder } = client;
   let previousUrl: string = window.location.href;
   let currentUrl;
   let cb: (event: MouseEvent) => void;
@@ -202,7 +197,7 @@ export default function reportEvents(
   /**
    * Get events data from Server API
    */
-  getPlatform().httpRequest.get(getEventsUrl, {
+  getPlatform().httpRequest.get(eventsUrl, {
     'Authorization': clientSdkKey,
     "Content-Type": "application/json",
     'UA': getPlatform()?.UA,
@@ -212,6 +207,7 @@ export default function reportEvents(
       totalEvents = res as IEvent;
     }
   }, (error: string) => {
+    client.emit("fetch_event_error");
     console.error('FeatureProbe JS SDK: Error getting events: ', error);
   })
 }

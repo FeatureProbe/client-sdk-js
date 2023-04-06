@@ -75,6 +75,14 @@
         console.log("error");
       });
 
+      fpClient.on("fetch_toggle_error", function() {
+        console.log("fetch_toggle_error");
+      });
+
+      fpClient.on("fetch_event_error", function() {
+        console.log("fetch_event_error");
+      });
+
       setTimeout(() => {
         fpClient.waitUntilReady().then(() => {
           console.log('wait until ready');
