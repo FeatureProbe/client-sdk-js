@@ -2,81 +2,81 @@ import { getPlatform } from "./platform";
 import { IAccessEvent, IAccess, IToggleCounter, ClickEvent, PageViewEvent, AccessEvent, CustomEvent } from "./types";
 
 export class EventRecorder {
-  private clientSdkKey: string;
-  private eventsUrl: string;
-  private closed: boolean;
-  private sendAccessQueue: IAccessEvent[];
-  private sendEventQueue: (AccessEvent | CustomEvent | ClickEvent | PageViewEvent)[];
-  private taskQueue: AsyncBlockingQueue<Promise<void>>;
-  private timer: NodeJS.Timer;
-  private readonly dispatch: Promise<void>;
+  private _clientSdkKey: string;
+  private _eventsUrl: string;
+  private _closed: boolean;
+  private _sendAccessQueue: IAccessEvent[];
+  private _sendEventQueue: (AccessEvent | CustomEvent | ClickEvent | PageViewEvent)[];
+  private _taskQueue: AsyncBlockingQueue<Promise<void>>;
+  private _timer: NodeJS.Timer;
+  private readonly _dispatch: Promise<void>;
 
   constructor(
     clientSdkKey: string,
     eventsUrl: string,
     flushInterval: number,
   ) {
-    this.clientSdkKey = clientSdkKey;
-    this.eventsUrl = eventsUrl;
-    this.closed = false;
-    this.sendAccessQueue = [];
-    this.sendEventQueue = [];
-    this.taskQueue = new AsyncBlockingQueue<Promise<void>>();
-    this.timer = setInterval(() => this.flush(), flushInterval);
-    this.dispatch = this.startDispatch();
+    this._clientSdkKey = clientSdkKey;
+    this._eventsUrl = eventsUrl;
+    this._closed = false;
+    this._sendAccessQueue = [];
+    this._sendEventQueue = [];
+    this._taskQueue = new AsyncBlockingQueue<Promise<void>>();
+    this._timer = setInterval(() => this.flush(), flushInterval);
+    this._dispatch = this.startDispatch();
   }
 
   set flushInterval(value: number) {
-    clearInterval(this.timer);
-    this.timer = setInterval(() => this.flush(), value);
+    clearInterval(this._timer);
+    this._timer = setInterval(() => this.flush(), value);
   }
 
   get accessQueue(): IAccessEvent[] {
-    return this.sendAccessQueue;
+    return this._sendAccessQueue;
   }
 
   get eventQueue(): (AccessEvent | CustomEvent | ClickEvent | PageViewEvent)[] {
-    return this.sendEventQueue;
+    return this._sendEventQueue;
   }
 
   public recordAccessEvent(accessEvent: IAccessEvent): void {
-    if (this.closed) {
+    if (this._closed) {
       console.warn("Trying to push access record to a closed EventProcessor, omitted");
       return;
     }
-    this.sendAccessQueue.push(accessEvent);
+    this._sendAccessQueue.push(accessEvent);
   }
 
   public recordTrackEvent(trackEvents: ClickEvent | PageViewEvent | AccessEvent | CustomEvent): void {
-    if (this.closed) {
+    if (this._closed) {
       console.warn("Trying to push access record to a closed EventProcessor, omitted");
       return;
     }
-    this.sendEventQueue.push(trackEvents);
+    this._sendEventQueue.push(trackEvents);
   }
 
   public flush(): void {
-    if (this.closed) {
+    if (this._closed) {
       console.warn("Trying to flush a closed EventProcessor, omitted");
       return;
     }
-    this.taskQueue.enqueue(this.doFlush());
+    this._taskQueue.enqueue(this.doFlush());
   }
 
   public async stop(): Promise<void> {
-    if (this.closed) {
+    if (this._closed) {
       console.warn("EventProcessor is already closed");
       return;
     }
-    clearInterval(this.timer);
-    this.closed = true;
-    this.taskQueue.enqueue(this.doFlush());
-    await this.dispatch;
+    clearInterval(this._timer);
+    this._closed = true;
+    this._taskQueue.enqueue(this.doFlush());
+    await this._dispatch;
   }
 
   private async startDispatch(): Promise<void> {
-    while (!this.closed || !this.taskQueue.isEmpty()) {
-      await this.taskQueue.dequeue();
+    while (!this._closed || !this._taskQueue.isEmpty()) {
+      await this._taskQueue.dequeue();
     }
   }
 
@@ -121,22 +121,22 @@ export class EventRecorder {
   }
 
   private async doFlush(): Promise<void> {
-    if (this.sendAccessQueue.length === 0 && this.sendEventQueue.length === 0) {
+    if (this._sendAccessQueue.length === 0 && this._sendEventQueue.length === 0) {
       return;
     }
-    const accessEvents = Object.assign([], this.sendAccessQueue);
-    const trackEvents = Object.assign([], this.sendEventQueue);
+    const accessEvents = Object.assign([], this._sendAccessQueue);
+    const trackEvents = Object.assign([], this._sendEventQueue);
     
-    this.sendAccessQueue = [];
-    this.sendEventQueue = [];
+    this._sendAccessQueue = [];
+    this._sendEventQueue = [];
 
     const eventRepos = [{
       events: trackEvents,
       access: accessEvents.length === 0 ? null : this.prepareSendData(accessEvents),
     }];
 
-    return getPlatform().httpRequest.post(this.eventsUrl, {
-      "Authorization": this.clientSdkKey,
+    return getPlatform().httpRequest.post(this._eventsUrl, {
+      "Authorization": this._clientSdkKey,
       "Content-Type": "application/json",
       "UA": getPlatform()?.UA,
     }, JSON.stringify(eventRepos), () => {
@@ -181,5 +181,4 @@ class AsyncBlockingQueue<T> {
       this.resolvers.push(resolve);
     }));
   }
-
 }

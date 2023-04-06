@@ -9,11 +9,13 @@ import flushEventBeforPageUnload from "./flushEvents";
 
 const KEY = "repository";
 
-const EVENTS = {
+export const EVENTS = {
   READY: "ready",
   ERROR: "error",
   UPDATE: "update",
   CACHE_READY: "cache_ready",
+  FETCH_TOGGLE_ERROR: "fetch_toggle_error",
+  FETCH_EVENT_ERROR: "fetch_event_error",
 };
 
 const STATUS = {
@@ -31,22 +33,22 @@ const TIMEOUT_INTERVAL = 10000;
  * which provides access to all of the SDK's functionality.
  */
 class FeatureProbe extends TinyEmitter {
-  private togglesUrl: string;
-  private eventsUrl: string;
-  private getEventsUrl: string;
-  private realtimeUrl: string;
-  private realtimePath: string;
-  private refreshInterval: number;
-  private clientSdkKey: string;
-  private user: FPUser;
-  private toggles: { [key: string]: FPDetail } | undefined;
-  private timer?: NodeJS.Timer;
-  private timeoutTimer?: NodeJS.Timer;
-  private readyPromise: null | Promise<void>;
-  private status: string;
-  private timeoutInterval: number;
-  private storage: FPStorageProvider;
-  private eventRecorder?: EventRecorder;
+  private _togglesUrl: string;
+  private _eventsUrl: string;
+  private _getEventsUrl: string;
+  private _realtimeUrl: string;
+  private _realtimePath: string;
+  private _refreshInterval: number;
+  private _clientSdkKey: string;
+  private _user: FPUser;
+  private _toggles: { [key: string]: FPDetail } | undefined;
+  private _timer?: NodeJS.Timer;
+  private _timeoutTimer?: NodeJS.Timer;
+  private _readyPromise: null | Promise<void>;
+  private _status: string;
+  private _timeoutInterval: number;
+  private _storage: FPStorageProvider;
+  private _eventRecorder: EventRecorder;
 
   constructor({
     remoteUrl,
@@ -80,28 +82,44 @@ class FeatureProbe extends TinyEmitter {
       throw new Error("remoteUrl or eventsUrl is required");
     }
 
-    this.toggles = undefined;
-    this.togglesUrl = togglesUrl ?? remoteUrl + "/api/client-sdk/toggles";
-    this.eventsUrl = eventsUrl ?? remoteUrl + "/api/events";
-    this.getEventsUrl = eventsUrl ?? remoteUrl + "/api/client-sdk/events";
-    this.realtimeUrl = realtimeUrl ?? remoteUrl + "/realtime";
-    this.realtimePath = realtimePath ?? "/server/realtime";
-    this.user = user;
-    this.clientSdkKey = clientSdkKey;
-    this.refreshInterval = refreshInterval;
-    this.timeoutInterval = timeoutInterval;
-    this.status = STATUS.START;
-    this.storage = getPlatform().localStorage;
-    this.readyPromise = null;
-    this.eventRecorder = new EventRecorder(this.clientSdkKey, this.eventsUrl, this.refreshInterval);
+    this._toggles = undefined;
+    this._togglesUrl = togglesUrl ?? remoteUrl + "/api/client-sdk/toggles";
+    this._eventsUrl = eventsUrl ?? remoteUrl + "/api/events";
+    this._getEventsUrl = eventsUrl ?? remoteUrl + "/api/client-sdk/events";
+    this._realtimeUrl = realtimeUrl ?? remoteUrl + "/realtime";
+    this._realtimePath = realtimePath ?? "/server/realtime";
+    this._user = user;
+    this._clientSdkKey = clientSdkKey;
+    this._refreshInterval = refreshInterval;
+    this._timeoutInterval = timeoutInterval;
+    this._status = STATUS.START;
+    this._storage = getPlatform().localStorage;
+    this._readyPromise = null;
+    this._eventRecorder = new EventRecorder(this._clientSdkKey, this._eventsUrl, this._refreshInterval);
 
     if (enableAutoReporting && window && document) {
-      reportEvents(this.clientSdkKey, user, this.getEventsUrl, this.eventRecorder);
+      reportEvents(this);
     }
 
     if (window && document) {
-      flushEventBeforPageUnload(this.eventRecorder);
+      flushEventBeforPageUnload(this._eventRecorder);
     }
+  }
+
+  get clientSdkKey(): string {
+    return this._clientSdkKey;
+  }
+
+  get user(): FPUser {
+    return this._user;
+  }
+
+  get eventsUrl(): string {
+    return this._getEventsUrl;
+  }
+
+  get eventRecorder(): EventRecorder {
+    return this._eventRecorder;
   }
 
   public static newForTest(toggles: { [key: string]: boolean }): FeatureProbe {
@@ -122,7 +140,7 @@ class FeatureProbe extends TinyEmitter {
         reason: "",
       };
     }
-    fp.toggles = _toggles;
+    fp._toggles = _toggles;
     fp.successInitialized();
     return fp;
   }
@@ -133,29 +151,29 @@ class FeatureProbe extends TinyEmitter {
   public async start(): Promise<void> {
     this.connectSocket();
 
-    if (this.status !== STATUS.START) {
+    if (this._status !== STATUS.START) {
       return;
     }
 
-    this.status = STATUS.PENDING;
+    this._status = STATUS.PENDING;
 
-    this.timeoutTimer = setTimeout(() => {
-      if (this.status === STATUS.PENDING) {
+    this._timeoutTimer = setTimeout(() => {
+      if (this._status === STATUS.PENDING) {
         this.errorInitialized();
       }
-    }, this.timeoutInterval);
+    }, this._timeoutInterval);
 
     try {
       // Emit `cache_ready` event if toggles exist in localStorage
-      const toggles = await this.storage.getItem(KEY);
+      const toggles = await this._storage.getItem(KEY);
       if (toggles) {
-        this.toggles = JSON.parse(toggles);
+        this._toggles = JSON.parse(toggles);
         this.emit(EVENTS.CACHE_READY);
       }
 
       await this.fetchToggles();
     } finally {
-      this.timer = setInterval(() => this.fetchToggles(), this.refreshInterval);
+      this._timer = setInterval(() => this.fetchToggles(), this._refreshInterval);
     }
   }
 
@@ -164,10 +182,10 @@ class FeatureProbe extends TinyEmitter {
    * SDK will no longer listen for toggle changes or send metrics to Server.
    */
   public stop(): void {
-    clearInterval(this.timer);
-    clearTimeout(this.timeoutTimer);
-    this.timeoutTimer = undefined;
-    this.timer = undefined;
+    clearInterval(this._timer);
+    clearTimeout(this._timeoutTimer);
+    this._timeoutTimer = undefined;
+    this._timer = undefined;
   }
 
   /**
@@ -177,19 +195,19 @@ class FeatureProbe extends TinyEmitter {
    * or ejected if client error get toggles from the server until `timeoutInterval` countdown reaches.
    */
   public waitUntilReady(): Promise<void> {
-    if (this.readyPromise) {
-      return this.readyPromise;
+    if (this._readyPromise) {
+      return this._readyPromise;
     }
 
-    if (this.status === STATUS.READY) {
+    if (this._status === STATUS.READY) {
       return Promise.resolve();
     }
 
-    if (this.status === STATUS.ERROR) {
+    if (this._status === STATUS.ERROR) {
       return Promise.reject();
     }
 
-    this.readyPromise = new Promise((resolve, reject) => {
+    this._readyPromise = new Promise((resolve, reject) => {
       const onReadyCallback = () => {
         this.off(EVENTS.READY, onReadyCallback);
         resolve();
@@ -204,7 +222,7 @@ class FeatureProbe extends TinyEmitter {
       this.on(EVENTS.ERROR, onErrorCallback);
     });
 
-    return this.readyPromise;
+    return this._readyPromise;
   }
 
   /**
@@ -315,7 +333,7 @@ class FeatureProbe extends TinyEmitter {
    * Returns an object of all available toggles' details to the current user.
    */
   public allToggles(): { [key: string]: FPDetail } | undefined {
-    return Object.assign({}, this.toggles);
+    return Object.assign({}, this._toggles);
   }
 
   /**
@@ -325,7 +343,7 @@ class FeatureProbe extends TinyEmitter {
    * been called, the initial user specified when the client was created.
    */
   public getUser(): FPUser {
-    return this.user;
+    return this._user;
   }
 
   /**
@@ -335,8 +353,8 @@ class FeatureProbe extends TinyEmitter {
    *   A new FPUser instance.
    */
   public identifyUser(user: FPUser): void {
-    this.user = user;
-    this.toggles = undefined;
+    this._user = user;
+    this._toggles = undefined;
     this.fetchToggles();
   }
 
@@ -352,14 +370,14 @@ class FeatureProbe extends TinyEmitter {
    * Manually push events.
    */
   public flush(): void {
-    this.eventRecorder?.flush();
+    this._eventRecorder?.flush();
   }
 
   /**
    * Record custom events, value is optional.
    */
   public track(name: string, value?: unknown): void {
-    this.eventRecorder?.recordTrackEvent({
+    this._eventRecorder?.recordTrackEvent({
       kind: "custom",
       name,
       time: Date.now(),
@@ -369,13 +387,13 @@ class FeatureProbe extends TinyEmitter {
   }
 
   private connectSocket() {
-    const socket = getPlatform().socket(this.realtimeUrl, {
-      path: this.realtimePath,
+    const socket = getPlatform().socket(this._realtimeUrl, {
+      path: this._realtimePath,
       transports: ["websocket"],
     });
 
     socket.on("connect", () => {
-      socket.emit("register", { sdk_key: this.clientSdkKey });
+      socket.emit("register", { sdk_key: this._clientSdkKey });
     });
 
     socket.on("update", () => {
@@ -386,11 +404,11 @@ class FeatureProbe extends TinyEmitter {
   }
 
   private toggleValue(key: string, defaultValue: IReturnValue, valueType: string): IReturnValue {
-    if (this.toggles == undefined) {
+    if (this._toggles == undefined) {
       return defaultValue;
     }
 
-    const detail = this.toggles[key];
+    const detail = this._toggles[key];
     if (detail === undefined) {
       return defaultValue;
     }
@@ -402,7 +420,7 @@ class FeatureProbe extends TinyEmitter {
       const DEFAULT_VARIATION_INDEX = -1;
       const DEFAULT_VERSION = 0;
 
-      this.eventRecorder?.recordAccessEvent({
+      this._eventRecorder?.recordAccessEvent({
         time: timestamp,
         key: key,
         value: detail.value,
@@ -412,7 +430,7 @@ class FeatureProbe extends TinyEmitter {
       });
 
       if (detail.trackAccessEvents) {
-        this.eventRecorder?.recordTrackEvent({
+        this._eventRecorder?.recordTrackEvent({
           kind: "access",
           time: timestamp,
           user: this.getUser().getKey(),
@@ -435,7 +453,7 @@ class FeatureProbe extends TinyEmitter {
     defaultValue: IReturnValue,
     valueType: string
   ): FPDetail {
-    if (this.toggles == undefined) {
+    if (this._toggles == undefined) {
       return {
         value: defaultValue,
         ruleIndex: null,
@@ -445,7 +463,7 @@ class FeatureProbe extends TinyEmitter {
       };
     }
 
-    const detail = this.toggles[key];
+    const detail = this._toggles[key];
     if (detail === undefined) {
       return {
         value: defaultValue,
@@ -457,7 +475,7 @@ class FeatureProbe extends TinyEmitter {
     } else if (typeof detail.value === valueType) {
       const timestamp = Date.now();
 
-      this.eventRecorder?.recordAccessEvent({
+      this._eventRecorder?.recordAccessEvent({
         time: timestamp,
         key: key,
         value: detail.value,
@@ -467,7 +485,7 @@ class FeatureProbe extends TinyEmitter {
       });
 
       if (detail.trackAccessEvents) {
-        this.eventRecorder?.recordTrackEvent({
+        this._eventRecorder?.recordTrackEvent({
           kind: "access",
           time: timestamp,
           user: this.getUser().getKey(),
@@ -492,56 +510,58 @@ class FeatureProbe extends TinyEmitter {
   }
 
   private async fetchToggles() {
-    const userStr = JSON.stringify(this.user);
+    const userStr = JSON.stringify(this._user);
     const userParam = Base64.encode(userStr);
-    const url = this.togglesUrl;
+    const url = this._togglesUrl;
 
     getPlatform().httpRequest.get(url, {
-      Authorization: this.clientSdkKey,
+      Authorization: this._clientSdkKey,
       "Content-Type": "application/json",
       UA: getPlatform()?.UA,
     }, {
       user: userParam,
     }, (json: unknown) => {
-      if (this.status !== STATUS.ERROR) {
-        this.toggles = json as { [key: string]: FPDetail; } | undefined;
+      if (this._status !== STATUS.ERROR) {
+        this._toggles = json as { [key: string]: FPDetail; } | undefined;
 
-        if (this.status === STATUS.PENDING) {
+        if (this._status === STATUS.PENDING) {
           this.successInitialized();
-        } else if (this.status === STATUS.READY) {
+        } else if (this._status === STATUS.READY) {
           this.emit(EVENTS.UPDATE);
         }
 
-        this.storage.setItem(KEY, JSON.stringify(json));
+        this._storage.setItem(KEY, JSON.stringify(json));
       }
     }, (error: string) => {
+      // Emit `fetch_toggle_error` event if toggles are successfully returned from server
+      this.emit(EVENTS.FETCH_TOGGLE_ERROR);
       console.error("FeatureProbe JS SDK: Error getting toggles: ", error);
     })
   }
 
-  // Emit `ready` event if toggles are successfully returned from server
+  // Emit `ready` event if toggles are successfully returned from server in time
   private successInitialized() {
-    this.status = STATUS.READY;
+    this._status = STATUS.READY;
     setTimeout(() => {
       this.emit(EVENTS.READY);
     });
 
-    if (this.timeoutTimer) {
-      clearTimeout(this.timeoutTimer);
-      this.timeoutTimer = undefined;
+    if (this._timeoutTimer) {
+      clearTimeout(this._timeoutTimer);
+      this._timeoutTimer = undefined;
     }
   }
 
   // Emit `error` event if toggles are not available and timeout has been reached
   private errorInitialized() {
-    this.status = STATUS.ERROR;
+    this._status = STATUS.ERROR;
     setTimeout(() => {
       this.emit(EVENTS.ERROR);
     });
 
-    if (this.timer) {
-      clearInterval(this.timer);
-      this.timer = undefined;
+    if (this._timer) {
+      clearInterval(this._timer);
+      this._timer = undefined;
     }
   }
 }
