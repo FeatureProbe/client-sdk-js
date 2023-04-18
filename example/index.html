@@ -22,7 +22,7 @@
     <div class="container">
       <h2 class="mt-2">FeatureProbe JS SDK demo</h2>
       <p>
-        This is a simple front-end-only application using FeatureProbe JS SDK.
+        This is a simple front-end-only page using FeatureProbe JS SDK.
       </p>
 
       <h3>boolean type</h3>
@@ -48,7 +48,7 @@
       });
 
       fpClient.on("cache_ready", function() {
-        console.log('cache_ready', fpClient.allToggles());
+        console.log("cache_ready", fpClient.allToggles());
       });
 
       fpClient.on("ready", function() {
@@ -85,9 +85,9 @@
 
       setTimeout(() => {
         fpClient.waitUntilReady().then(() => {
-          console.log('wait until ready');
+          console.log("wait until ready");
         }).catch(() => {
-          console.log('wait until ready catch');
+          console.log("wait until ready catch");
         })
       }, 5000);
 

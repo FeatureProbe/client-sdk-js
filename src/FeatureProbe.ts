@@ -382,6 +382,7 @@ class FeatureProbe extends TinyEmitter {
       name,
       time: Date.now(),
       user: this.getUser().getKey(),
+      userDetail: this.getUser(),
       value,
     });
   }
@@ -434,6 +435,21 @@ class FeatureProbe extends TinyEmitter {
           kind: "access",
           time: timestamp,
           user: this.getUser().getKey(),
+          userDetail: this.getUser(),
+          key: key,
+          value: detail.value,
+          variationIndex: detail.variationIndex ?? DEFAULT_VARIATION_INDEX,
+          ruleIndex: detail.ruleIndex ?? null,
+          version: detail.version ?? DEFAULT_VERSION,
+        });
+      }
+
+      if (detail?.trackDebugUntilDate && (Date.now() < detail?.trackDebugUntilDate)) {
+        this._eventRecorder?.recordTrackEvent({
+          kind: "debug",
+          time: timestamp,
+          user: this.getUser().getKey(),
+          userDetail: this.getUser(),
           key: key,
           value: detail.value,
           variationIndex: detail.variationIndex ?? DEFAULT_VARIATION_INDEX,
@@ -489,6 +505,21 @@ class FeatureProbe extends TinyEmitter {
           kind: "access",
           time: timestamp,
           user: this.getUser().getKey(),
+          userDetail: this.getUser(),
+          key: key,
+          value: detail.value,
+          variationIndex: detail.variationIndex ?? -1,
+          ruleIndex: detail.ruleIndex ?? null,
+          version: detail.version ?? 0,
+        });
+      }
+
+      if (detail?.trackDebugUntilDate && (Date.now() < detail?.trackDebugUntilDate)) {
+        this._eventRecorder?.recordTrackEvent({
+          kind: "debug",
+          time: timestamp,
+          user: this.getUser().getKey(),
+          userDetail: this.getUser(),
           key: key,
           value: detail.value,
           variationIndex: detail.variationIndex ?? -1,
@@ -504,7 +535,7 @@ class FeatureProbe extends TinyEmitter {
         ruleIndex: null,
         variationIndex: null,
         version: null,
-        reason: "Value type mismatch",
+        reason: "Value type mismatch.",
       };
     }
   }
@@ -535,7 +566,7 @@ class FeatureProbe extends TinyEmitter {
     }, (error: string) => {
       // Emit `fetch_toggle_error` event if toggles are successfully returned from server
       this.emit(EVENTS.FETCH_TOGGLE_ERROR);
-      console.error("FeatureProbe JS SDK: Error getting toggles: ", error);
+      console.error(`FeatureProbe ${getPlatform()?.UA} SDK: Error getting toggles: `, error);
     })
   }
 

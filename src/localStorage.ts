@@ -9,10 +9,10 @@ export default class StorageProvider {
 
   public async getItem(key: string): Promise<string> {
     try {
-      return localStorage.getItem(key) || '';
+      return localStorage.getItem(key) || "";
     } catch (e) {
       console.error(e);
-      return '';
+      return "";
     }
   }
 }

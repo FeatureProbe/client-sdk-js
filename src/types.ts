@@ -60,6 +60,11 @@ export interface FPDetail {
    * Toggle last modified timestamp
    */
   lastModified?: number;
+
+  /**
+   * Track debug event deadline timestamp
+   */
+  trackDebugUntilDate?: number;
 }
 
 export interface FPConfig {
@@ -167,6 +172,7 @@ export interface AccessEvent {
   kind: string;
   time: number;
   user: string;
+  userDetail: FPUser;
   key: string;
   value: boolean | string | number | Record<string, unknown>;
   variationIndex: number;
@@ -179,6 +185,7 @@ export interface CustomEvent {
   name: string;
   time: number;
   user: string;
+  userDetail: FPUser;
   value: unknown;
 }
 
@@ -187,6 +194,7 @@ export interface ClickEvent {
   name: string;
   time: number;
   user: string;
+  userDetail: FPUser;
   url: string;
   selector: string;
 }
@@ -196,6 +204,7 @@ export interface PageViewEvent {
   name: string;
   time: number;
   user: string;
+  userDetail: FPUser;
   url: string;
 }
 

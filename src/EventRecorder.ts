@@ -142,7 +142,7 @@ export class EventRecorder {
     }, JSON.stringify(eventRepos), () => {
       // Do nothing
     }, (error: string) => {
-      console.error("FeatureProbe JS SDK: Error reporting events: ", error);
+      console.error(`FeatureProbe ${getPlatform()?.UA} SDK: Error reporting events: `, error);
     });
 
   }
