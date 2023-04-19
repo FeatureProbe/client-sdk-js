@@ -73,7 +73,6 @@ export default function reportEvents(client: FeatureProbe): void {
       name: event.name,
       time: Date.now(),
       user: user.getKey(),
-      userDetail: user,
       url: window.location.href,
     };
 

@@ -382,7 +382,6 @@ class FeatureProbe extends TinyEmitter {
       name,
       time: Date.now(),
       user: this.getUser().getKey(),
-      userDetail: this.getUser(),
       value,
     });
   }
@@ -435,7 +434,6 @@ class FeatureProbe extends TinyEmitter {
           kind: "access",
           time: timestamp,
           user: this.getUser().getKey(),
-          userDetail: this.getUser(),
           key: key,
           value: detail.value,
           variationIndex: detail.variationIndex ?? DEFAULT_VARIATION_INDEX,
@@ -444,7 +442,7 @@ class FeatureProbe extends TinyEmitter {
         });
       }
 
-      if (detail?.trackDebugUntilDate && (Date.now() <= detail?.trackDebugUntilDate)) {
+      if (detail?.debugUntilTime && (Date.now() <= detail?.debugUntilTime)) {
         this._eventRecorder?.recordTrackEvent({
           kind: "debug",
           time: timestamp,
@@ -505,7 +503,6 @@ class FeatureProbe extends TinyEmitter {
           kind: "access",
           time: timestamp,
           user: this.getUser().getKey(),
-          userDetail: this.getUser(),
           key: key,
           value: detail.value,
           variationIndex: detail.variationIndex ?? -1,
@@ -514,7 +511,7 @@ class FeatureProbe extends TinyEmitter {
         });
       }
 
-      if (detail?.trackDebugUntilDate && (Date.now() <= detail?.trackDebugUntilDate)) {
+      if (detail?.debugUntilTime && (Date.now() <= detail?.debugUntilTime)) {
         this._eventRecorder?.recordTrackEvent({
           kind: "debug",
           time: timestamp,

@@ -62,9 +62,9 @@ export interface FPDetail {
   lastModified?: number;
 
   /**
-   * Track debug event deadline timestamp
+   * Debug deadline timestamp
    */
-  trackDebugUntilDate?: number;
+  debugUntilTime?: number;
 }
 
 export interface FPConfig {
@@ -172,6 +172,17 @@ export interface AccessEvent {
   kind: string;
   time: number;
   user: string;
+  key: string;
+  value: boolean | string | number | Record<string, unknown>;
+  variationIndex: number;
+  ruleIndex: number | null;
+  version: number;
+}
+
+export interface DebugEvent {
+  kind: string;
+  time: number;
+  user: string;
   userDetail: FPUser;
   key: string;
   value: boolean | string | number | Record<string, unknown>;
@@ -185,7 +196,6 @@ export interface CustomEvent {
   name: string;
   time: number;
   user: string;
-  userDetail: FPUser;
   value: unknown;
 }
 
@@ -194,7 +204,6 @@ export interface ClickEvent {
   name: string;
   time: number;
   user: string;
-  userDetail: FPUser;
   url: string;
   selector: string;
 }
@@ -204,7 +213,6 @@ export interface PageViewEvent {
   name: string;
   time: number;
   user: string;
-  userDetail: FPUser;
   url: string;
 }
 

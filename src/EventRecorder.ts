@@ -1,5 +1,5 @@
 import { getPlatform } from "./platform";
-import { IAccessEvent, IAccess, IToggleCounter, ClickEvent, PageViewEvent, AccessEvent, CustomEvent } from "./types";
+import { IAccessEvent, IAccess, IToggleCounter, ClickEvent, PageViewEvent, AccessEvent, CustomEvent, DebugEvent } from "./types";
 
 export class EventRecorder {
   private _clientSdkKey: string;
@@ -47,7 +47,7 @@ export class EventRecorder {
     this._sendAccessQueue.push(accessEvent);
   }
 
-  public recordTrackEvent(trackEvents: ClickEvent | PageViewEvent | AccessEvent | CustomEvent): void {
+  public recordTrackEvent(trackEvents: ClickEvent | PageViewEvent | AccessEvent | CustomEvent | DebugEvent): void {
     if (this._closed) {
       console.warn("Trying to push access record to a closed EventProcessor, omitted");
       return;
