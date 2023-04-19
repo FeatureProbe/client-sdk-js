@@ -444,7 +444,7 @@ class FeatureProbe extends TinyEmitter {
         });
       }
 
-      if (detail?.trackDebugUntilDate && (Date.now() < detail?.trackDebugUntilDate)) {
+      if (detail?.trackDebugUntilDate && (Date.now() <= detail?.trackDebugUntilDate)) {
         this._eventRecorder?.recordTrackEvent({
           kind: "debug",
           time: timestamp,
@@ -514,7 +514,7 @@ class FeatureProbe extends TinyEmitter {
         });
       }
 
-      if (detail?.trackDebugUntilDate && (Date.now() < detail?.trackDebugUntilDate)) {
+      if (detail?.trackDebugUntilDate && (Date.now() <= detail?.trackDebugUntilDate)) {
         this._eventRecorder?.recordTrackEvent({
           kind: "debug",
           time: timestamp,
