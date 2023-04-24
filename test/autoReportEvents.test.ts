@@ -6,11 +6,16 @@ import { FetchMock } from "jest-fetch-mock";
 import * as data from "./fixtures/events.json";
 
 const _fetch = fetch as FetchMock;
+let originalError: () => void;
 
-beforeEach(() => {});
+beforeEach(() => {
+  originalError = console.error;
+  console.error = jest.fn();
+});
 
 afterEach(() => {
   _fetch.resetMocks();
+  console.error = originalError;
 });
 
 test("report events", (done) => {
@@ -35,4 +40,3 @@ test("report events", (done) => {
     done();
   }, DELAY);
 });
-

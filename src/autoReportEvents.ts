@@ -6,13 +6,13 @@ const WATCH_URL_CHANGE_INTERVAL = 300;
 
 // Reference: https://github.com/sindresorhus/escape-string-regexp
 function escapeStringRegexp(string: string): string {
-  if (typeof string !== 'string') {
-    throw new TypeError('Expected a string');
+  if (typeof string !== "string") {
+    throw new TypeError("Expected a string");
   }
 
   return string
-    .replace(/[|\\{}()[\]^$+*?.]/g, '\\$&')
-    .replace(/-/g, '\\x2d');
+    .replace(/[|\\{}()[\]^$+*?.]/g, "\\$&")
+    .replace(/-/g, "\\x2d");
 }
 
 /**
@@ -28,20 +28,20 @@ function matchUrl(event: IEventValue): boolean {
   let testUrl;
 
   switch (event.matcher) {
-    case 'EXACT':
+    case "EXACT":
       testUrl = href;
-      regex = new RegExp('^' + escapeStringRegexp(event.url) + '/?$');
+      regex = new RegExp("^" + escapeStringRegexp(event.url) + "/?$");
       break;
-    case 'SIMPLE':
-      testUrl = href.replace(hash, '').replace(search, '');
-      regex = new RegExp('^' + escapeStringRegexp(event.url) + '/?$');
+    case "SIMPLE":
+      testUrl = href.replace(hash, "").replace(search, "");
+      regex = new RegExp("^" + escapeStringRegexp(event.url) + "/?$");
       break;
-    case 'SUBSTRING':
-      testUrl =  href.replace(search, '');
-      regex = new RegExp('.*' + escapeStringRegexp(event.url) + '.*$');
+    case "SUBSTRING":
+      testUrl =  href.replace(search, "");
+      regex = new RegExp(".*" + escapeStringRegexp(event.url) + ".*$");
       break;
-    case 'REGULAR':
-      testUrl =  href.replace(search, '');
+    case "REGULAR":
+      testUrl =  href.replace(search, "");
       regex = new RegExp(event.url);
       break;
     default:
@@ -76,7 +76,7 @@ export default function reportEvents(client: FeatureProbe): void {
       url: window.location.href,
     };
 
-    if (kind === 'click' && event.selector) {
+    if (kind === "click" && event.selector) {
       (sendEvent as ClickEvent).selector = event.selector;
     }
 
@@ -136,10 +136,10 @@ export default function reportEvents(client: FeatureProbe): void {
       const event: IEventValue = data[key];
 
       if (matchUrl(event)) {
-        if (event.type === 'PAGE_VIEW') {
-          sendEvents('pageview', event);
-        } else if (event.type === 'CLICK') {
-          sendEvents('pageview', event);
+        if (event.type === "PAGE_VIEW") {
+          sendEvents("pageview", event);
+        } else if (event.type === "CLICK") {
+          sendEvents("pageview", event);
           clickEvents.push(event);
         }
       }
@@ -149,11 +149,11 @@ export default function reportEvents(client: FeatureProbe): void {
       cb = function(event: MouseEvent) {
         const result = getClickEvents(event, clickEvents);
         for (const event of result) {
-          sendEvents('click', event);
+          sendEvents("click", event);
         }
       };
   
-      document.addEventListener('click', cb);
+      document.addEventListener("click", cb);
     }
   }
 
@@ -168,7 +168,7 @@ export default function reportEvents(client: FeatureProbe): void {
 
     if (currentUrl !== previousUrl) {
       previousUrl = currentUrl;
-      document.removeEventListener('click', cb);
+      document.removeEventListener("click", cb);
       cb = function() {
         // do nothing
       }
@@ -180,12 +180,12 @@ export default function reportEvents(client: FeatureProbe): void {
   /**
    * Register popstate event when using history router
    */
-  window.addEventListener('popstate', watchUrlChange);
+  window.addEventListener("popstate", watchUrlChange);
 
   /**
    * Register hashchange event when using hash router
    */
-  window.addEventListener('hashchange', watchUrlChange);
+  window.addEventListener("hashchange", watchUrlChange);
 
   /**
    * If popstate or hashchange events are not supported
@@ -198,9 +198,9 @@ export default function reportEvents(client: FeatureProbe): void {
    * Get events data from Server API
    */
   getPlatform().httpRequest.get(eventsUrl, {
-    'Authorization': clientSdkKey,
+    "Authorization": clientSdkKey,
     "Content-Type": "application/json",
-    'UA': getPlatform()?.UA,
+    "UA": getPlatform()?.UA,
   }, {}, res => {
     if (res) {
       distinguishEvents(res as IEvent);
@@ -208,6 +208,6 @@ export default function reportEvents(client: FeatureProbe): void {
     }
   }, (error: string) => {
     client.emit("fetch_event_error");
-    console.error('FeatureProbe JS SDK: Error getting events: ', error);
+    console.error(`FeatureProbe ${getPlatform()?.UA} SDK: Error getting events: `, error);
   })
 }

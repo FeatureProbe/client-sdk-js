@@ -3,11 +3,16 @@ import { FetchMock } from "jest-fetch-mock";
 import * as data from "./fixtures/toggles.json";
 
 const _fetch = fetch as FetchMock;
+let originalError: () => void;
 
-beforeEach(() => {});
+beforeEach(() => {
+  originalError = console.error;
+  console.error = jest.fn();
+});
 
 afterEach(() => {
   _fetch.resetMocks();
+  console.error = originalError;
 });
 
 test("FeatureProbe init with invalid param", () => {
@@ -114,7 +119,7 @@ test("FeatureProbe bool toggle", (done) => {
 
     detail = fp.boolDetail("string_toggle", false);
     expect(detail.value).toBe(false);
-    expect(detail.reason).toBe("Value type mismatch");
+    expect(detail.reason).toBe("Value type mismatch.");
     done();
   });
 });
@@ -141,7 +146,7 @@ test("FeatureProbe number toggle", (done) => {
 
     detail = fp.numberDetail("string_toggle", 404);
     expect(detail.value).toBe(404);
-    expect(detail.reason).toBe("Value type mismatch");
+    expect(detail.reason).toBe("Value type mismatch.");
     done();
   });
 });
@@ -163,7 +168,7 @@ test("FeatureProbe string toggle", (done) => {
 
     let detail = fp.stringDetail("bool_toggle", "not match");
     expect(detail.value).toBe("not match");
-    expect(detail.reason).toBe("Value type mismatch");
+    expect(detail.reason).toBe("Value type mismatch.");
 
     detail = fp.stringDetail("string_toggle", "defaultValue");
     expect(detail.value).toBe("1");
@@ -194,7 +199,7 @@ test("FeatureProbe json toggle", (done) => {
 
     let detail = fp.jsonDetail("bool_toggle", {});
     expect(detail.value).toMatchObject({});
-    expect(detail.reason).toBe("Value type mismatch");
+    expect(detail.reason).toBe("Value type mismatch.");
 
     detail = fp.jsonDetail("json_toggle", {});
     expect(detail.value).toMatchObject({});
