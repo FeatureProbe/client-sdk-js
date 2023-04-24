@@ -442,6 +442,20 @@ class FeatureProbe extends TinyEmitter {
         });
       }
 
+      if (detail?.debugUntilTime && (Date.now() <= detail?.debugUntilTime)) {
+        this._eventRecorder?.recordTrackEvent({
+          kind: "debug",
+          time: timestamp,
+          user: this.getUser().getKey(),
+          userDetail: this.getUser(),
+          key: key,
+          value: detail.value,
+          variationIndex: detail.variationIndex ?? DEFAULT_VARIATION_INDEX,
+          ruleIndex: detail.ruleIndex ?? null,
+          version: detail.version ?? DEFAULT_VERSION,
+        });
+      }
+
       return v;
     } else {
       return defaultValue;
@@ -496,6 +510,20 @@ class FeatureProbe extends TinyEmitter {
           version: detail.version ?? 0,
         });
       }
+
+      if (detail?.debugUntilTime && (Date.now() <= detail?.debugUntilTime)) {
+        this._eventRecorder?.recordTrackEvent({
+          kind: "debug",
+          time: timestamp,
+          user: this.getUser().getKey(),
+          userDetail: this.getUser(),
+          key: key,
+          value: detail.value,
+          variationIndex: detail.variationIndex ?? -1,
+          ruleIndex: detail.ruleIndex ?? null,
+          version: detail.version ?? 0,
+        });
+      }
       
       return detail;
     } else {
@@ -504,7 +532,7 @@ class FeatureProbe extends TinyEmitter {
         ruleIndex: null,
         variationIndex: null,
         version: null,
-        reason: "Value type mismatch",
+        reason: "Value type mismatch.",
       };
     }
   }
@@ -535,7 +563,7 @@ class FeatureProbe extends TinyEmitter {
     }, (error: string) => {
       // Emit `fetch_toggle_error` event if toggles are successfully returned from server
       this.emit(EVENTS.FETCH_TOGGLE_ERROR);
-      console.error("FeatureProbe JS SDK: Error getting toggles: ", error);
+      console.error(`FeatureProbe ${getPlatform()?.UA} SDK: Error getting toggles: `, error);
     })
   }
 

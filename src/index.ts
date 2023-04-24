@@ -1,7 +1,7 @@
-import { FPUser } from './FPUser';
-import { FeatureProbe } from './FeatureProbe';
-import { FPConfig, FPStorageProvider, IOption, FPDetail, IHttpRequest, IReturnValue, IPlatForm } from './types';
-import { setPlatform, getPlatform } from './platform';
+import { FPUser } from "./FPUser";
+import { FeatureProbe } from "./FeatureProbe";
+import { FPConfig, FPStorageProvider, IOption, FPDetail, IHttpRequest, IReturnValue, IPlatForm } from "./types";
+import { setPlatform, getPlatform } from "./platform";
 
 /**
  * Initialize SDK with platform
