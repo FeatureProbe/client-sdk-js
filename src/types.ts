@@ -117,6 +117,11 @@ export interface FPConfig {
    * Whether SDK should report pageview and click event automatically. Default value is true.
    */
   enableAutoReporting?: boolean;
+
+  /**
+   * Whether SDK should use WebSocket. Default value is false.
+   */
+  enableRealtime?: boolean;
 }
 
 export interface FPStorageProvider {
