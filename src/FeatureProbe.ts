@@ -49,6 +49,7 @@ class FeatureProbe extends TinyEmitter {
   private _timeoutInterval: number;
   private _storage: FPStorageProvider;
   private _eventRecorder: EventRecorder;
+  private _enableRealtime: boolean;
 
   constructor({
     remoteUrl,
@@ -61,6 +62,7 @@ class FeatureProbe extends TinyEmitter {
     refreshInterval = REFRESH_INTERVAL,
     timeoutInterval = TIMEOUT_INTERVAL,
     enableAutoReporting = true,
+    enableRealtime = false,
   }: FPConfig) {
     super();
     if (!clientSdkKey) {
@@ -96,6 +98,7 @@ class FeatureProbe extends TinyEmitter {
     this._storage = getPlatform().localStorage;
     this._readyPromise = null;
     this._eventRecorder = new EventRecorder(this._clientSdkKey, this._eventsUrl, this._refreshInterval);
+    this._enableRealtime = enableRealtime;
 
     if (enableAutoReporting && window && document) {
       reportEvents(this);
@@ -149,7 +152,9 @@ class FeatureProbe extends TinyEmitter {
    * Start the FeatureProbe client.
    */
   public async start(): Promise<void> {
-    this.connectSocket();
+    if (this._enableRealtime) {
+      this.connectSocket();
+    }
 
     if (this._status !== STATUS.START) {
       return;
