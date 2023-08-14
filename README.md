@@ -5,7 +5,7 @@
 [![Github Star](https://img.shields.io/github/stars/FeatureProbe/client-sdk-js)](https://github.com/FeatureProbe/client-sdk-js/stargazers)
 [![Apache-2.0 license](https://img.shields.io/github/license/FeatureProbe/FeatureProbe)](https://github.com/FeatureProbe/FeatureProbe/blob/main/LICENSE)
 
-FeatureProbe is an open source feature management service. This SDK is used to control features in JavaScript programs. This
+[FeatureProbe](https://featureprobe.com/) is an open source feature management service. This SDK is used to control features in JavaScript programs. This
 SDK is designed primarily for use in multi-user systems such as web servers and applications.
 
 ## Basic Terms
