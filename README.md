@@ -18,7 +18,7 @@ Reading the short [Doc](https://github.com/FeatureProbe/feature-probe-docs/blob/
 
 ## How to use this SDK
 
-See [SDK Doc](https://docs.featureprobe.io/how-to/Client-Side%20SDKs/javascript-sdk/) for detail（[中文](https://docs.featureprobe.io/zh-CN/how-to/Client-Side%20SDKs/javascript-sdk/)）. For more information about SDK API, please reference [SDK API](https://featureprobe.github.io/client-sdk-js/).
+See [SDK Doc](https://docs.featureprobe.com/how-to/Client-Side%20SDKs/javascript-sdk/) for detail（[中文](https://docs.featureprobe.com/zh-CN/how-to/Client-Side%20SDKs/javascript-sdk/)）. For more information about SDK API, please reference [SDK API](https://featureprobe.github.io/client-sdk-js/).
 
 
 ## Contributing
